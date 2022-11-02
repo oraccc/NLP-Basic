@@ -44,14 +44,59 @@
 * 语料：NLP所研究的内容
 * 语料库（Corpus）：文本的集合
 
-:two:语料预处理
+##### :two:语料预处理
 
-:three:特征工程
+* 语料清洗
+  * 人工去重、对齐、删除和标注
+* 分词
+  * 基于字符串匹配的分词方式
+  * 基于理解的分词方式
+  * 基于统计的分词方式
+  * 基于规则的分词方式
+* 词性标注
+  * 常用于**情感分析**、**知识推理**（知识推理任务是从给定的段落和问题中找到相应答案的任务）任务
+  * 词性标注的方法
+    * 基于统计（最大概率输出词性、基于[HMM(Hidden Markov Models)](https://blog.csdn.net/u013166817/article/details/85805513)的词性标注）
+    * 基于规则
+* 去停用词
+  * 标点、语气助词、人称
 
-:four:特征选择
+##### :three:特征工程
 
-:five:模型训练
+* 将分词表示成计算机可以理解的向量形式
+* 常见的表示模型
+  * **词袋模型**（BOW)，**TF-IDF**
+  * **词向量** 
+    * One-hot
+    * Word2Vec
 
-:six:评价指标
+##### :four:特征选择
 
-:seven:模型上线应用
+* 选择合适的、表达能力强的特征
+  * DF(Document Frequency): 统计特征词出现的文档数量，用来衡量某个特征词的重要性。越高越重要
+  * MI(Mutual Information): 互信息法用于衡量特征词与文档类别直接的信息量。如果某个特征词的频率很低，那么互信息得分就会很大，因此互信息法倾向"低频"的特征词。
+  * IG(Information Gain): 通过某个特征词的缺失与存在的两种情况下，语料中前后信息的增加，衡量某个特征词的重要性
+  * CHI(Chi-square): 利用了统计学中的"假设检验"的基本思想: 首先假设特征词与类别直接是不相关的，如果利用CHI分布计算出的检验值偏离阈值越大，那么更有信心否定原假设，接受原假设的备择假设：特征词与类别有着很高的关联度。
+  * WLLR(Weighted Log Likelihood Ration)
+  * WFO(Weighted Frequency and Odds)
+
+##### :five:模型训练
+
+* 模型的分类
+  * 机器学习：KNN、SVM、Naive Bayes、Decision Tree、GBDT(Gradient Boosting Decision Tree)、K-means
+  * 深度学习: CNN、RNN、LSTM、Seq2Seq、FastText、TextCNN
+* 过拟合和欠拟合问题
+  * 过拟合：在训练集上表现好，在测试集上表现差
+    * 增大数据的训练量、正则化、重新进行特征选取、Dropout方法
+  * 欠拟合、模型不能很好地拟合数据
+    * 添加特征项、增加模型的复杂度（更多层、增加模型的泛化能力）、减少正则化参数
+  * 梯度消失和梯度爆炸问题
+
+##### :six:评价指标
+
+* Accuracy, Precision, Recall, F1
+* [ROC](https://blog.csdn.net/qq_40728667/article/details/123119335)(Receiver Operating Characteristic) ,AUC(Area under Curve)
+
+##### :seven:模型上线应用
+
+---
