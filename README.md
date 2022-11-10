@@ -9,5 +9,4 @@
 #### Code
 
 - [x] [Word2Vec](https://github.com/oraccc/NLP-Basic/blob/master/code/1-word-embedding.ipynb)
-
 - [x] [fastText](https://github.com/oraccc/NLP-Basic/blob/master/code/2-fasttext.ipynb)
