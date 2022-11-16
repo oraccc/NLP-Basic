@@ -6,6 +6,8 @@
 - [x] [§1-词嵌入](https://github.com/oraccc/NLP-Basic/blob/master/note/1-%E8%AF%8D%E5%B5%8C%E5%85%A5.md)
 - [x] [§2-子词嵌入(fastText)](https://github.com/oraccc/NLP-Basic/blob/master/note/2-%E5%AD%90%E8%AF%8D%E5%B5%8C%E5%85%A5.md)
 - [x] [§3-全局向量词嵌入(GloVe)](https://github.com/oraccc/NLP-Basic/blob/master/note/3-%E5%85%A8%E5%B1%80%E5%90%91%E9%87%8F%E8%AF%8D%E5%B5%8C%E5%85%A5.md)
+- [x] [§4-TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/note/4-TextCNN.md)
+- [x] [§5-TextRNN](https://github.com/oraccc/NLP-Basic/blob/master/note/5-TextRNN.md)
 
 #### Code
 
