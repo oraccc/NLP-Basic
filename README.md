@@ -15,3 +15,4 @@
 - [x] [fastText](https://github.com/oraccc/NLP-Basic/blob/master/code/2-fasttext.ipynb)
 - [x] [GloVe](https://github.com/oraccc/NLP-Basic/blob/master/code/3-glove.ipynb)
 - [x] [TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/code/4-textcnn.ipynb)
+- [x] [TextRNN](https://github.com/oraccc/NLP-Basic/blob/master/code/5-textrnn.ipynb)
