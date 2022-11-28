@@ -24,3 +24,35 @@ RNN是自然语言处理领域常见的一个标配网络，在序列标注/命�
 
 #### LSTM网络
 
+##### :one:输入输出
+
+LSTM网络（图右）与普通RNN的主要输入输出区别
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm.png" width="450" />
+
+* RNN有一个传递状态$h^t$
+* LSTM有两个传递状态，一个cell state $c^t$ 和一个hidden state $h^t$ （RNN的$h^t$对应于LSTM的$c^t$）
+  * 其中对于传递下去的从 $c^t$ 改变得很慢，通常输出的 $c^t$ 是上一个状态传过来的 $c^{t-1}$ 加上一些数值
+  *  而 $h^t$ 则在不同的节点下有很大的区别
+
+##### :two:状态计算
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm2.png" width="425" />
+
+使用LSTM的当前输入 $x^t$ 和上一个状态传递下来的 $h^{t-1}$ 拼接训练得到四个状态
+
+* $z^f$, $z^i$, $z^o$ 是由拼接向量乘以相应的权重矩阵之后，再通过 $sigmoid$ 激活函数转换成0到1之间的数值，来作为一种门控状态
+* $z$ 则是将结果通过一个 $tanh$ 激活函数将拼接向量和权重矩阵相乘的结果转换成-1到1的值，使用 $tanh$ 是因为将结果作为输入数据而非门控信息
+
+**:three:内部结构**
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm3.png" width="500" />
+
+其中 $\odot$ 代表Hadamard Product，操作矩阵中对应的元素相乘，因此要求两个相乘矩阵是同型的， $\oplus$代表矩阵加法
+
+LSTM内部主要有三个阶段
+
+* **忘记阶段**
+  * 对上一个节点传进来的输入进行选择性遗忘，“忘记不重要的，记住重要的”
+* **选择记忆阶段**
+* **输出阶段**
