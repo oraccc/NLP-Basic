@@ -14,13 +14,17 @@
 - [x] 具体到文本分类任务中，从某种意义上可以理解为可以**捕获变长、单向的N-Gram信息**（Bi-LSTM可以是双向)。
 - [x] 普通RNN在处理较长文本时会出现**梯度消失**问题，因此文本中RNN选用LSTM进行实验。
 
-RNN是自然语言处理领域常见的一个标配网络，在序列标注/命名体识别/seq2seq模型等很多场景都有应用，[Recurrent Neural Network for Text Classification with Multi-Task Learning](https://www.ijcai.org/Proceedings/16/Papers/408.pdf) 文中介绍了RNN用于分类问题的设计，下图是RNN用于网络结构原理示意图，示例中是利用最后一个词的结果，可以看做是包含了前面所有词语的信息，然后直接接全连接层softmax输出了。
+RNN是自然语言处理领域常见的一个标配网络，在序列标注/命名体识别/seq2seq模型等很多场景都有应用
+
+[Recurrent Neural Network for Text Classification with Multi-Task Learning](https://www.ijcai.org/Proceedings/16/Papers/408.pdf) 文中介绍了RNN用于分类问题的设计，下图是RNN用于网络结构原理示意图，示例中是利用最后一个词的结果，可以看做是包含了前面所有词语的信息，然后直接接全连接层softmax输出了。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/RNN.png" width="550" />
 
+---
 
 
-### §5.2 LSTM & Bi-LSTM
+
+### §5.2 TextRNN具体结构：LSTM & Bi-LSTM
 
 #### LSTM网络
 
@@ -66,3 +70,22 @@ LSTM内部主要有三个阶段
 
 
 #### Bi-LSTM
+
+Bi-LSTM是LSTM的改进版本，将单向RNN结构改成了双向RNN，希望不仅能考虑正向编码的信息，也能考虑反向编码的信息,模型结构如下图所示
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/bi-lstm.png" width="425" />
+
+- [x] 与LSTM不同的是，在RNN部分使用了Bi-LSTM进行信息提取，Bi-LSTM层中，内部有两个LSTM，分别为 $Forward$ 层和 $Backward$ 层，表示前向与后向
+- [x] 每个LSTM设定输出的维度为 $embeding\_size$ 维向量，在 $Forward$ 层从 $1$ 时刻到 $t$ 时刻正向计算一遍，得到并保存每个时刻向前隐含层的输出。
+- [x] 在 $Backward$ 层沿着时刻 $t$ 到时刻 $1$ 反向计算一遍，得到并保存每个时刻向后隐含层的输出。
+- [x] 最后在每个时刻结合 $Forward$ 层和 $Backward$ 层的相应时刻输出的结果进行拼接得到最终的输出。因此输出的维度为 $embeding\_size*2$ 维。
+
+---
+
+
+
+### §5.3 TextRNN总结
+
+TextRNN的结构非常灵活，可以任意改变。比如把LSTM单元替换为GRU单元，把双向改为单向，添加dropout或BatchNormalization以及再多堆叠一层等等。
+
+TextRNN在文本分类任务上的效果非常好，与TextCNN不相上下，但RNN的**训练速度相对偏慢**，一般2层就已经足够多了。
