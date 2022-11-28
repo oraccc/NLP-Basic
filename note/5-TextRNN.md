@@ -12,6 +12,8 @@
 
 ### §5.1 TextRNN简介
 
+> :memo: [Jupyter Notebook 代码](https://github.com/oraccc/NLP-Basic/blob/master/code/5-textrnn.ipynb)
+
 文本分类任务中，**TextCNN可以用来提取句子中类似N-Gram的关键信息，适合短句子文本**。尽管TextCNN能够在很多任务里面能有不错的表现，但TextCNN有个最大问题是**固定filter_size的视野**:
 
 - 一方面无法建模更长的序列信息
