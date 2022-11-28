@@ -40,7 +40,7 @@ TextCNN是Yoon Kim在2014年于论文 [Convolutional Naural Networks for Sentenc
 
 - 图像是二维数据, 图像的卷积核都是**二维**的，是从左到右, 从上到下进行滑动来进行特征抽取。
 
-- 自然语言是一维数据,**textCNN使用一维卷积，即 $filter\_size*embedding\_dim$，有一个维度和embedding相等**。
+- 自然语言是一维数据,**textCNN使用一维卷积，即 $filterSize*embeddingDim$，有一个维度和embedding相等**。
 
    > 虽然经过word-embedding 生成了二维词向量，但是对词向量做从左到右滑动来进行卷积没有意义. 比如 "今天" 对应的向量[0, 0, 0, 0, 1], 按窗口大小为 1* 2 从左到右滑动得到[0,0], [0,0], [0,0], [0, 1]这四个向量, 对应的都是"今天"这个词汇, 这种滑动没有帮助.
 
@@ -58,8 +58,8 @@ TextCNN的详细过程与原理图如下所示
 
 第一层是图中最左边的7乘5的句子矩阵，每行是词向量，$dim=5$，这个可以类比为图像中的原始像素点了。以1个样本为例，整体的前向逻辑是：
 
-- [x] 对词进行embedding，得到 $[seq\_length, embedding\_dim]$
-- [x] 用N个卷积核，得到N个 $seq\_length - filter\_size + 1$ 长度的一维feature map
+- [x] 对词进行embedding，得到 $[seqLength, embeddingDim]$
+- [x] 用N个卷积核，得到N个 $seqLength - filterSize + 1$ 长度的一维feature map
 - [x] 对feature map进行max-pooling（**因为是时间维度的，也称max-over-time pooling**），得到N个 $1 * 1$ 的数值，这样不同长度句子经过pooling层之后都能变成定长的表示了，然后拼接成一个N维向量，作为文本的句子表示
 - [x] 最后接一层全连接的 softmax 层，将N维向量压缩到类目个数的维度，输出每个类别的概率。
 
