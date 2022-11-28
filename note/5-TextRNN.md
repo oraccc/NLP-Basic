@@ -1,5 +1,13 @@
 ## TextRNN
 
+- [TextRNN](#textrnn)
+  - [§5.1 TextRNN简介](#51-textrnn简介)
+  - [§5.2 TextRNN具体结构：LSTM \& Bi-LSTM](#52-textrnn具体结构lstm--bi-lstm)
+    - [LSTM网络](#lstm网络)
+      - [:one:输入输出](#one输入输出)
+      - [:two:状态计算](#two状态计算)
+    - [Bi-LSTM](#bi-lstm)
+  - [§5.3 TextRNN总结](#53-textrnn总结)
 
 
 ### §5.1 TextRNN简介
