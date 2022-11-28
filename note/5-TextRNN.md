@@ -76,9 +76,9 @@ Bi-LSTM是LSTM的改进版本，将单向RNN结构改成了双向RNN，希望不
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/bi-lstm.png" width="425" />
 
 - [x] 与LSTM不同的是，在RNN部分使用了Bi-LSTM进行信息提取，Bi-LSTM层中，内部有两个LSTM，分别为 $Forward$ 层和 $Backward$ 层，表示前向与后向
-- [x] 每个LSTM设定输出的维度为 $embeding\_size$ 维向量，在 $Forward$ 层从 $1$ 时刻到 $t$ 时刻正向计算一遍，得到并保存每个时刻向前隐含层的输出。
+- [x] 每个LSTM设定输出的维度为 $embedingSize$ 维向量，在 $Forward$ 层从 $1$ 时刻到 $t$ 时刻正向计算一遍，得到并保存每个时刻向前隐含层的输出。
 - [x] 在 $Backward$ 层沿着时刻 $t$ 到时刻 $1$ 反向计算一遍，得到并保存每个时刻向后隐含层的输出。
-- [x] 最后在每个时刻结合 $Forward$ 层和 $Backward$ 层的相应时刻输出的结果进行拼接得到最终的输出。因此输出的维度为 $embeding\_size*2$ 维。
+- [x] 最后在每个时刻结合 $Forward$ 层和 $Backward$ 层的相应时刻输出的结果进行拼接得到最终的输出。因此输出的维度为 $embedingSize*2$ 维。
 
 ---
 
