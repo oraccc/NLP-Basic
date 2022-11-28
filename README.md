@@ -14,3 +14,4 @@
 - [x] [Word2Vec](https://github.com/oraccc/NLP-Basic/blob/master/code/1-word-embedding.ipynb)
 - [x] [fastText](https://github.com/oraccc/NLP-Basic/blob/master/code/2-fasttext.ipynb)
 - [x] [GloVe](https://github.com/oraccc/NLP-Basic/blob/master/code/3-glove.ipynb)
+- [x] [TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/code/4-textcnn.ipynb)
