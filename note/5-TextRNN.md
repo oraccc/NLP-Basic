@@ -14,3 +14,6 @@
 具体到文本分类任务中，从某种意义上可以理解为可以**捕获变长、单向的N-Gram信息**（Bi-LSTM可以是双向)。普通RNN在处理较长文本时会出现**梯度消失**问题，因此文本中RNN选用LSTM进行实验。
 
 RNN是自然语言处理领域常见的一个标配网络，在序列标注/命名体识别/seq2seq模型等很多场景都有应用，[Recurrent Neural Network for Text Classification with Multi-Task Learning](https://www.ijcai.org/Proceedings/16/Papers/408.pdf) 文中介绍了RNN用于分类问题的设计，下图是RNN用于网络结构原理示意图，示例中是利用最后一个词的结果，可以看做是包含了前面所有词语的信息，然后直接接全连接层softmax输出了。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/RNN.png" width="550" />
+
