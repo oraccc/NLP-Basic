@@ -1,5 +1,19 @@
 ## Seq2Seq
 
+- [Seq2Seq](#seq2seq)
+  - [§6.1 Seq2Seq简介](#61-seq2seq简介)
+  - [§6.2 编码器与解码器](#62-编码器与解码器)
+    - [:one:编码器](#one编码器)
+    - [:two:解码器](#two解码器)
+  - [§6.3 Seq2Seq模型训练与预测](#63-seq2seq模型训练与预测)
+    - [:one:训练模型](#one训练模型)
+      - [:bookmark\_tabs:关于Teacher Forcing](#bookmark_tabs关于teacher-forcing)
+      - [:bookmark\_tabs:关于注意力机制](#bookmark_tabs关于注意力机制)
+    - [:two:模型预测](#two模型预测)
+      - [Method 1: 贪婪搜索](#method-1-贪婪搜索)
+      - [Method 2: 穷举搜索](#method-2-穷举搜索)
+      - [Method 3: 束搜索](#method-3-束搜索)
+  - [§6.4 BLEU得分](#64-bleu得分)
 
 
 ### §6.1 Seq2Seq简介
