@@ -31,3 +31,8 @@
 - [x] [GloVe](https://github.com/oraccc/NLP-Basic/blob/master/code/3-glove.ipynb)
 - [x] [TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/code/4-textcnn.ipynb)
 - [x] [TextRNN](https://github.com/oraccc/NLP-Basic/blob/master/code/5-textrnn.ipynb)
+- [x] [Seq2Seq](https://github.com/oraccc/NLP-Basic/blob/master/code/6-seq2seq.ipynb)
+- [ ] Attention
+- [ ] Transformer
+- [ ] BERT
+- [ ] XLNet
