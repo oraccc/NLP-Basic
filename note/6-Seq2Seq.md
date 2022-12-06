@@ -15,8 +15,9 @@
       - [Method 3: 束搜索](#method-3-束搜索)
   - [§6.4 BLEU得分](#64-bleu得分)
 
-
 ### §6.1 Seq2Seq简介
+
+> :memo: [Jupyter Notebook 代码](https://github.com/oraccc/NLP-Basic/blob/master/code/6-seq2seq.ipynb)
 
 在自然语⾔处理的很多应用（机器翻译、人机对话、聊天机器人）中，输入和输出都可以是不定长序列。以机器翻译为例，输入可以是⼀段不定长的英语文本序列，输出可以是一段不定长的法语文本序列，
 
