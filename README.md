@@ -20,8 +20,16 @@
 
 
 
-##### Part II : Deep Learning
+##### Part II : Machine Learning
 
-##### Part III : Machine Learning
+| :bookmark_tabs:Note | :chart_with_upwards_trend:Code |
+| ------------------- | :----------------------------- |
+| §1-线性回归         |                                |
+| §2-逻辑回归         |                                |
+| §3-决策树           |                                |
+
+
+
+##### Part III : Deep Learning
 
 ---
