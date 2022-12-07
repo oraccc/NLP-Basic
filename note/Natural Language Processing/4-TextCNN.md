@@ -18,7 +18,7 @@
 
 ### §4.1 TextCNN简介
 
-> :memo: [Jupyter Notebook 代码](https://github.com/oraccc/NLP-Basic/blob/master/code/4-textcnn.ipynb)
+> :memo: [Jupyter Notebook 代码](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/4-textcnn.ipynb)
 
 我们可以将文本当作**一维图像**，从而可以用**⼀维卷积神经网络**来捕捉临近词之间的关联。
 
