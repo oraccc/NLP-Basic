@@ -126,7 +126,7 @@ Teacher Forcing在一定程度上解决了这个问题，它的流程如下图�
 
 ##### :bookmark_tabs:关于注意力机制
 
-> 见相关章节
+> 见[相关章节](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/7-%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md)
 
 
 
