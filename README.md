@@ -20,7 +20,7 @@
 
 
 
-##### Part II : Machine Learning
+##### Part II : Machine Learning & Deep Learning
 
 | :bookmark_tabs:Note                                          | :chart_with_upwards_trend:Code                               |
 | ------------------------------------------------------------ | :----------------------------------------------------------- |
@@ -29,7 +29,5 @@
 | §3-决策树                                                    |                                                              |
 
 
-
-##### Part III : Deep Learning
 
 ---
