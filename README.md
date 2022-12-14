@@ -24,7 +24,7 @@
 
 | :bookmark_tabs:Note                                          | :chart_with_upwards_trend:Code                               |
 | ------------------------------------------------------------ | :----------------------------------------------------------- |
-| [§1-线性回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning/1-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.md) | [Linear Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning/1-linear-regression.ipynb) |
+| [§1-线性回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/1-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.md) | [Linear Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning%20%26%20Deep%20Learning/1-linear-regression.ipynb) |
 | §2-逻辑回归                                                  |                                                              |
 | §3-决策树                                                    |                                                              |
 
