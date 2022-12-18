@@ -13,7 +13,7 @@
 | [§4-TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/4-TextCNN.md) | [TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/4-textcnn.ipynb) |
 | [§5-TextRNN](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/5-TextRNN.md) | [TextRNN](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/5-textrnn.ipynb) |
 | [§6-序列到序列模型(Seq2Seq)](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/6-Seq2Seq.md) | [Seq2Seq](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/6-seq2seq.ipynb) |
-| [§7-注意力机制](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/7-%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md) | Attention                                                    |
+| [§7-注意力机制](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/7-%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md) | [Attention](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/7-attention.ipynb) |
 | §8-Transformer                                               | Transformer                                                  |
 | §9-BERT                                                      | BERT                                                         |
 | §10-XLNet                                                    | XLNet                                                        |
