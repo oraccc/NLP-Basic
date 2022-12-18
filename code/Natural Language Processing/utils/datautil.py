@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jul 11 16:11:18 2017
-
-@author: 代码医生 qq群：40016981，公众号：xiangyuejiqiren
-@blog：http://blog.csdn.net/lijin6249
-"""
-
 import sys
 import os
 import matplotlib.mlab as mlab
@@ -16,10 +9,7 @@ import numpy as np
 
 from tensorflow.python.platform import gfile
 from random import shuffle
-#from multiprocessing import Process, Lock
-#import time
-#from math import floor
-#import os
+
 import re 
 
 #获取文件列表
@@ -334,19 +324,17 @@ max_source_size = 200
 def main():
     vocabulary_filenameen = os.path.join(data_dir, vocabulary_fileen)
     vocabulary_filenamech = os.path.join(data_dir, vocabulary_filech)
-##############################
-    #创建英文字典
+
     training_dataen, counten, dictionaryen, reverse_dictionaryen,textsszen =create_vocabulary(vocabulary_filenameen
                                                             ,raw_data_dir,vocab_size,Isch=False,normalize_digits = True)
     print("training_data",len(training_dataen))
     print("dictionary",len(dictionaryen)) 
-#########################
-    #创建中文字典    
+
     training_datach, countch, dictionarych, reverse_dictionarych,textsszch =create_vocabulary(vocabulary_filenamech
                                                       ,raw_data_dir_to,vocab_size,Isch=True,normalize_digits = True)
     print("training_datach",len(training_datach))
     print("dictionarych",len(dictionarych)) 
-#############################    
+
     vocaben, rev_vocaben =initialize_vocabulary(vocabulary_filenameen)
     vocabch, rev_vocabch =initialize_vocabulary(vocabulary_filenamech)
 
@@ -354,7 +342,7 @@ def main():
     textdir_to_idsdir(raw_data_dir,data_dir+"fromids/",vocaben,normalize_digits=True,Isch=False)
     textdir_to_idsdir(raw_data_dir_to,data_dir+"toids/",vocabch,normalize_digits=True,Isch=True)
 
-##########################分析
+
     filesfrom,_=getRawFileList(data_dir+"fromids/")
     filesto,_=getRawFileList(data_dir+"toids/")
     source_train_file_path = filesfrom[0]
