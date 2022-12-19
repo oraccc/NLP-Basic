@@ -11,7 +11,8 @@ from tensorflow.python.platform import gfile
 from random import shuffle
 
 import re 
-
+import jieba
+jieba.load_userdict(r"../../../data/attention-data/myjiebadict.txt")
 #获取文件列表
 def getRawFileList( path):
     files = []
@@ -83,8 +84,7 @@ def basic_tokenizer(sentence):
         str2 = str2 +i
     return str2
 
-import jieba
-jieba.load_userdict("myjiebadict.txt")
+
 
 def fenci(training_data):
     seg_list = jieba.cut(training_data)  # 默认是精确模式  
@@ -200,8 +200,8 @@ def plot_histo_lengths(title, lengths):
 
 #将读好的对话文本按行分开，一行问，一行答。存为两个文件。training_data为总数据，textssz为每行的索引
 def splitFileOneline(training_data ,textssz):
-    source_file = os.path.join(data_dir+'fromids/', "data_source_test.txt")
-    target_file = os.path.join(data_dir+'toids/', "data_target_test.txt")
+    source_file = os.path.join(data_dir+'from_ids/', "data_source_test.txt")
+    target_file = os.path.join(data_dir+'to_ids/', "data_target_test.txt")
     create_seq2seqfile(training_data,source_file ,target_file,textssz)
 
 
@@ -238,7 +238,6 @@ def analysisfile(source_file,target_file):
 def initialize_vocabulary(vocabulary_path):
   if gfile.Exists(vocabulary_path):
     rev_vocab = []
-    #with gfile.GFile(vocabulary_path, mode="rb") as f:
     with gfile.GFile(vocabulary_path, mode="r") as f:
       rev_vocab.extend(f.readlines())
     rev_vocab = [line.strip() for line in rev_vocab]
@@ -304,11 +303,11 @@ def ids2texts( indices,rev_vocab):
 
 
 
-data_dir = "fanyichina/"
-raw_data_dir = "fanyichina/yuliao/from"
-raw_data_dir_to = "fanyichina/yuliao/to"
-vocabulary_fileen ="dicten.txt"
-vocabulary_filech = "dictch.txt"
+data_dir = r"../../../data/attention-data/translation"
+raw_data_dir = r"../../../data/attention-data/translation/corpus/from"
+raw_data_dir_to = r"../../../data/attention-data/translation/corpus/from"
+vocabulary_fileen ="dict_en.txt"
+vocabulary_filech = "dict_ch.txt"
 
 
 plot_histograms = plot_scatter =True
@@ -339,12 +338,12 @@ def main():
     vocabch, rev_vocabch =initialize_vocabulary(vocabulary_filenamech)
 
     print(len(rev_vocaben))
-    textdir_to_idsdir(raw_data_dir,data_dir+"fromids/",vocaben,normalize_digits=True,Isch=False)
-    textdir_to_idsdir(raw_data_dir_to,data_dir+"toids/",vocabch,normalize_digits=True,Isch=True)
+    textdir_to_idsdir(raw_data_dir,data_dir+"from_ids/",vocaben,normalize_digits=True,Isch=False)
+    textdir_to_idsdir(raw_data_dir_to,data_dir+"to_ids/",vocabch,normalize_digits=True,Isch=True)
 
 
-    filesfrom,_=getRawFileList(data_dir+"fromids/")
-    filesto,_=getRawFileList(data_dir+"toids/")
+    filesfrom,_=getRawFileList(data_dir+"from_ids/")
+    filesto,_=getRawFileList(data_dir+"to_ids/")
     source_train_file_path = filesfrom[0]
     target_train_file_path= filesto[0]    
     analysisfile(source_train_file_path,target_train_file_path)
