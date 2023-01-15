@@ -4,8 +4,8 @@
 
 ##### Part I : NLP
 
-| :bookmark_tabs:Note                                          | :chart_with_upwards_trend:Code                               |
-| ------------------------------------------------------------ | :----------------------------------------------------------- |
+|:bookmark_tabs:Note          | :chart_with_upwards_trend:Code                               |
+| ----------------------------------------- | :----------------------------------------------------------- |
 | [§0-NLP概述](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/0-NLP%E6%A6%82%E8%BF%B0.md) |                                                              |
 | [§1-词嵌入](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/1-%E8%AF%8D%E5%B5%8C%E5%85%A5.md) | [Word2Vec](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/1-word-embedding.ipynb) |
 | [§2-子词嵌入(fastText)](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/2-%E5%AD%90%E8%AF%8D%E5%B5%8C%E5%85%A5.md) | [fastText](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/2-fasttext.ipynb) |
