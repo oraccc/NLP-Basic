@@ -62,4 +62,4 @@ The animal didn't cross the street because it was too tired
 
 * 下一步就是把**Value和softmax得到的值进行相乘**，并相加，得到的结果即是Self-Attetion在当前节点的值。
 
-  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-4.png" width="450" />
+  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-2.png" width="450" />
