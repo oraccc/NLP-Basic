@@ -29,7 +29,7 @@
 
 当输入和输出都是不定长序列时，我们可以使用编码器—解码器（encoder-decoder）或者序列到序列模型（**seq2seq模型**）。这两个模型**本质上都用到了两个循环神经网络**，分别叫做**编码器**和**解码器**。编码器用来分析输入序列，解码器用来生成输出序列。两个循环神经网络是**共同训练**的。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/Seq2Seq/translate.png" width="700" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2seq/translate.png" width="700" />
 
 上图描述了使用编码器—解码器将上述英语句子翻译成法语句子的⼀种方法。
 
@@ -122,7 +122,7 @@ Teacher Forcing在一定程度上解决了这个问题，它的流程如下图�
 
 
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/Seq2Seq/teacher forcing.png" width="650" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2seq/teacher forcing.png" width="650" />
 
 ##### :bookmark_tabs:关于注意力机制
 
@@ -153,11 +153,11 @@ $$
 
 > 假设输出词典里面有“A”, “B”, “C”和“\<eos>”这4个词。下图中每个时间步下的4个数字分别代表了该时间步生成“A”, “B”, “C”和“\<eos>”这4个词的条件概率。在每个时间步，贪婪搜索选取条件概率最大的词。因此，下图中将生成输出序列 `A, B, C, <eos>`。该输出序列的条件概率是 $0.5 × 0.4 × 0.4 × 0.6 = 0.048$。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/Seq2Seq/example1.png" width="350" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2seq/example1.png" width="350" />
 
 > 接下来，观察下面演示的例子。与上图中不同，在时间步2中选取了条件概率第⼆大的词“C” 。由于时间步3所基于的时间步1和2的输出子序列由上图中的“A”“B”变为了下图中的“A”“C”，下图中时间步3生成各个词的条件概率发生了变化。我们选取条件概率最大的词“B”。此时时间步4所基于的前3个时间步的输出子序列为`A, C, B`，与上图中的`A, B, C`不同。因此，下图中时间步4生成各个词的条件概率也与上图中的不同。我们发现，此时的输出序列`A, C, B, <eos>`的条件概率是 $0.5 × 0.3 × 0.6 × 0.6 = 0.054$，大于贪婪搜索得到的输出序列的条件概率。因此，贪婪搜索得到的输出序列`A, B, C, <eos>`并非最优输出序列。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/Seq2Seq/example2.png" width="350" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2seq/example2.png" width="350" />
 
 
 
@@ -183,7 +183,7 @@ $$
 - 在之后的每个时间步，基于上个时间步的 $k$ 个候选输出序列，从 $k*|Y|$ 个可能的输出序列中选取条件概率最大的 $k$ 个，作为该时间步的候选输出序列。
 - 最终，我们从各个时间步的候选输出序列中筛选出包含特殊符号“\<eos>”的序列，并将它们中所有特殊符号“\<eos>”后面的子序列舍弃，得到**最终候选输出序列的集合**。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/Seq2Seq/beam search.png" width="650" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2Seq/beam search.png" width="650" />
 
 束宽为2，输出序列最大长度为3。
 

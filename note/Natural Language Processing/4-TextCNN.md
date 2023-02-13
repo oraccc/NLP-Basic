@@ -32,7 +32,7 @@ TextCNN是Yoon Kim在2014年于论文 [Convolutional Naural Networks for Sentenc
 
 与传统图像的CNN网络相比, TextCNN 在网络结构上没有任何变化（甚至更加简单了）。从下图可以看出TextCNN 其实只有一层卷积, 一层max-pooling, 最后将输出外接softmax来n分类。
 
-<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextCNN/TextCNN2.png" width = "700" />
+<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textcnn/TextCNN2.png" width = "700" />
 
 #### 与传统CNN网络的不同
 
@@ -52,7 +52,7 @@ TextCNN是Yoon Kim在2014年于论文 [Convolutional Naural Networks for Sentenc
 
 TextCNN的详细过程与原理图如下所示
 
-<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextCNN/TextCNN.png" width = "500" />
+<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textcnn/TextCNN.png" width = "500" />
 
 #### 详细过程
 
@@ -84,7 +84,7 @@ TextCNN的详细过程与原理图如下所示
 
 对于channel在TextCNN 是否有用, 从论文的实验结果来看多channels并没有明显提升模型的分类能力, 七个数据集上的五个数据集单channel的TextCNN 表现都要优于多channels的TextCNN
 
-<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextCNN/experiment.png" width = "700" />
+<img src = "https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textcnn/experiment.png" width = "700" />
 
 论文中四个model 的不同：
 

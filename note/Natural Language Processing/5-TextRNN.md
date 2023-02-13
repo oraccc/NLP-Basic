@@ -28,7 +28,7 @@ RNN是自然语言处理领域常见的一个标配网络，在序列标注/命�
 
 [Recurrent Neural Network for Text Classification with Multi-Task Learning](https://www.ijcai.org/Proceedings/16/Papers/408.pdf) 文中介绍了RNN用于分类问题的设计，下图是RNN用于网络结构原理示意图，示例中是利用最后一个词的结果，可以看做是包含了前面所有词语的信息，然后直接接全连接层softmax输出了。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/RNN.png" width="550" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textrnn/RNN.png" width="550" />
 
 ---
 
@@ -42,7 +42,7 @@ RNN是自然语言处理领域常见的一个标配网络，在序列标注/命�
 
 LSTM网络（图右）与普通RNN的主要输入输出区别
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm.png" width="450" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textrnn/lstm.png" width="450" />
 
 * RNN有一个传递状态$h^t$
 * LSTM有两个传递状态，一个cell state $c^t$ 和一个hidden state $h^t$ （RNN的$h^t$对应于LSTM的$c^t$）
@@ -51,7 +51,7 @@ LSTM网络（图右）与普通RNN的主要输入输出区别
 
 ##### :two:状态计算
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm2.png" width="425" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textrnn/lstm2.png" width="425" />
 
 使用LSTM的当前输入 $x^t$ 和上一个状态传递下来的 $h^{t-1}$ 拼接训练得到四个状态
 
@@ -60,7 +60,7 @@ LSTM网络（图右）与普通RNN的主要输入输出区别
 
 **:three:内部结构**
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/lstm3.png" width="500" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textrnn/lstm3.png" width="500" />
 
 其中 $\odot$ 代表Hadamard Product，操作矩阵中对应的元素相乘，因此要求两个相乘矩阵是同型的， $\oplus$代表矩阵加法
 
@@ -83,7 +83,7 @@ LSTM内部主要有三个阶段
 
 Bi-LSTM是LSTM的改进版本，将单向RNN结构改成了双向RNN，希望不仅能考虑正向编码的信息，也能考虑反向编码的信息,模型结构如下图所示
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/TextRNN/bi-lstm.png" width="425" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/textrnn/bi-lstm.png" width="425" />
 
 - [x] 与LSTM不同的是，在RNN部分使用了Bi-LSTM进行信息提取，Bi-LSTM层中，内部有两个LSTM，分别为 $Forward$ 层和 $Backward$ 层，表示前向与后向
 - [x] 每个LSTM设定输出的维度为 $embedingSize$ 维向量，在 $Forward$ 层从 $1$ 时刻到 $t$ 时刻正向计算一遍，得到并保存每个时刻向前隐含层的输出。
