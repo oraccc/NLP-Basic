@@ -54,7 +54,7 @@ The animal didn't cross the street because it was too tired
 
 * 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为**（64，512）**注意第二个维度需要**和embedding的维度一样**，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是**64**。
 
-  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-1.png" width="500" />
+  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention1.png" width="500" />
 
 * 计算Self-Attention的分数值，该分数值决定了当我们在某个位置encode一个词时，对输入句子的其他部分的**关注程度**。这个分数值的计算方法是Query与Key做**点乘**，以下图为例，首先我们需要针对Thinking这个词，计算出其他词对于该词的一个分数值，首先是针对于自己本身即q1·k1，然后是针对于第二个词即q1·k2。
 
@@ -62,4 +62,12 @@ The animal didn't cross the street because it was too tired
 
 * 下一步就是把**Value和softmax得到的值进行相乘**，并相加，得到的结果即是Self-Attetion在当前节点的值。
 
-  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-2.png" width="450" />
+  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention2.png" width="450" />
+
+在实际的应用场景，为了提高计算速度，我们采用的是矩阵的方式，直接计算出Query, Key, Value的矩阵，然后把embedding的值与三个矩阵直接相乘，把得到的新矩阵 Q 与 K 相乘，乘以一个常数，做softmax操作，最后乘上 V 矩阵。
+
+**这种通过 query 和 key 的相似性程度来确定 value 的权重分布的方法被称为scaled dot-product attention。**
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention3.png" width="350" />
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention4.png" width="550" />
