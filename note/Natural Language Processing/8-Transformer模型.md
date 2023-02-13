@@ -41,3 +41,15 @@ $$
 其中pos是指当前词在句子中的位置，i是指向量中每个值的index，可以看出，在**偶数位置，使用正弦编码，在奇数位置，使用余弦编码**。
 
 最后把这个Positional Encoding与embedding的值相加，作为输入送到下一层。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/PE.png" width="600" />
+
+#### Self-Attention
+
+接下来我们详细看一下self-attention，其思想和attention类似，但是self-attention是**Transformer用来将其他相关单词的“理解”转换成我们正在处理的单词的一种思路**，我们看个例子：
+
+The animal didn't cross the street because it was too tired
+
+这里的 it 到底代表的是 animal 还是 street 呢，对于我们来说能很简单的判断出来，但是对于机器来说，是很难判断的，self-attention就能够让机器把 it 和 animal 联系起来，接下来我们看下详细的处理过程。
+
+* 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为（64，512）注意第二个维度需要和embedding的维度一样，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是64。
