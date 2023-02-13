@@ -52,6 +52,14 @@ The animal didn't cross the street because it was too tired
 
 这里的 it 到底代表的是 animal 还是 street 呢，对于我们来说能很简单的判断出来，但是对于机器来说，是很难判断的，self-attention就能够让机器把 it 和 animal 联系起来，接下来我们看下详细的处理过程。
 
-* 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为（64，512）注意第二个维度需要和embedding的维度一样，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是64。
+* 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为**（64，512）**注意第二个维度需要**和embedding的维度一样**，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是**64**。
 
   <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-1.png" width="500" />
+
+* 计算Self-Attention的分数值，该分数值决定了当我们在某个位置encode一个词时，对输入句子的其他部分的**关注程度**。这个分数值的计算方法是Query与Key做**点乘**，以下图为例，首先我们需要针对Thinking这个词，计算出其他词对于该词的一个分数值，首先是针对于自己本身即q1·k1，然后是针对于第二个词即q1·k2。
+
+* 接下来，把点乘的结果除以一个常数，这里我们除以8，这个值一般是采用上文提到的矩阵的第一个维度的开方即64的开方8，当然也可以选择其他的值，然后把得到的结果做一个softmax的计算。得到的结果即是**每个词对于当前位置的词的相关性大小**，当然，当前位置的词相关性肯定会会很大。
+
+* 下一步就是把**Value和softmax得到的值进行相乘**，并相加，得到的结果即是Self-Attetion在当前节点的值。
+
+  <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention-4.png" width="450" />
