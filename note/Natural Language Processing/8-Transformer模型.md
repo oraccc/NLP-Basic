@@ -26,3 +26,5 @@
 ### §8.2 Encoder层
 
 首先，模型需要对输入的数据进行一个**embedding**操作，也可以理解为类似w2v的操作，embedding结束之后，输入到encoder层，self-attention处理完数据后把数据送给前馈神经网络，前馈神经网络的计算可以并行，得到的输出会输入到下一个encoder。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/encoder.png" width="400" />
