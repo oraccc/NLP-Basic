@@ -36,6 +36,7 @@ Transformer模型中缺少一种解释输入序列中单词顺序的方法，它
 这个位置向量的具体计算方法有很多种，论文中的计算方法如下：
 $$
 PE(pos, 2i) = sin(\frac{pos}{10000^{\frac{2i}{d_{model}}}}) \\
+
 PE(pos, 2i+1) = cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
 $$
 其中pos是指当前词在句子中的位置，i是指向量中每个值的index，可以看出，在**偶数位置，使用正弦编码，在奇数位置，使用余弦编码**。
@@ -52,7 +53,7 @@ The animal didn't cross the street because it was too tired
 
 这里的 it 到底代表的是 animal 还是 street 呢，对于我们来说能很简单的判断出来，但是对于机器来说，是很难判断的，self-attention就能够让机器把 it 和 animal 联系起来，接下来我们看下详细的处理过程。
 
-* 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为**（64，512）**注意第二个维度需要**和embedding的维度一样**，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是**64**。
+* 首先，Self-Attention会计算出三个新的向量，在论文中，向量的维度是512维，我们把这三个向量分别称为Query、Key、Value，这三个向量是用embedding向量与一个矩阵相乘得到的结果，这个矩阵是随机初始化的，维度为（64，512）注意第二个维度需要**和embedding的维度一样**，其值在BP的过程中会一直进行更新，得到的这三个向量的维度是**64**。
 
   <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention1.png" width="500" />
 
