@@ -35,8 +35,10 @@ Transformer模型中缺少一种解释输入序列中单词顺序的方法，它
 
 这个位置向量的具体计算方法有很多种，论文中的计算方法如下：
 $$
-PE(pos, 2i) = sin(\frac{pos}{10000^{\frac{2i}{d_{model}}}}) \\
+PE(pos, 2i) = sin(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
+$$
 
+$$
 PE(pos, 2i+1) = cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
 $$
 其中pos是指当前词在句子中的位置，i是指向量中每个值的index，可以看出，在**偶数位置，使用正弦编码，在奇数位置，使用余弦编码**。
