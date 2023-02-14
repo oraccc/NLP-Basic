@@ -137,6 +137,27 @@ $$
 
 ### §8.3 Dncoder层
 
-Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attetion**
+Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attention**
 
-**mask 表示掩码，它对某些值进行掩盖，使其在参数更新时不产生效果**。Transformer 模型里面涉及两种 mask，分别是 `padding mask` 和 `sequence mask`。其中，padding mask 在**所有的** `scaled dot-product attention` 里面都需要用到，而 sequence mask 只有在 decoder 的 self-attention 里面用到。
+#### Masked Mutil-Head Attention
+
+**Mask 表示掩码，它对某些值进行掩盖，使其在参数更新时不产生效果**。Transformer 模型里面涉及两种 mask，分别是 `padding mask` 和 `sequence mask`。其中，padding mask 在**所有的** `scaled dot-product attention` 里面都需要用到，而 sequence mask 只有在 decoder 的 self-attention 里面用到。
+
+* **Padding Mask**
+  * 因为每个批次输入序列长度是不一样的，因此我们要对输入序列进行对齐。
+    * 具体来说，就是给在较短的序列后面**填充 0**。但是如果输入的序列太长，则是**截取**左边的内容，把多余的直接舍弃。
+  * 因为这些填充的位置，其实是没什么意义的，所以我们的attention机制**不应该把注意力放在这些位置上**，所以我们需要进行一些处理。
+  * 具体的做法是，把这些位置的值加上一个非常大的负数(负无穷)，这样的话，经过 softmax，这些位置的概率就会**接近0**！
+  * 而我们的 padding mask 实际上是一个张量，每个值都是一个Boolean，值为 False 的地方就是我们要进行处理的地方。
+* **Sequence Mask**
+  * Sequence Mask 是为了使得 Decoder **不能看见未来的信息**。也就是对于一个序列，在 time_step 为 t 的时刻，我们的解码输出应该**只能依赖于 t 时刻之前的输出**，而不能依赖 t 之后的输出。因此我们需要想一个办法，把 t 之后的信息给隐藏起来。
+  * 那么具体怎么做呢？**产生一个下三角矩阵，下三角上半部分的值全为0**。把这个矩阵作用在每一个序列上，就可以达到我们的目的。
+  * 对于 decoder 的 self-attention，里面使用到的 `scaled dot-product attention`，同时需要`padding mask` 和 `sequence mask` 作为 attn_mask，具体实现就是**两个mask相加**作为attn_mask。
+  * 其他情况，attn_mask 一律等于 padding mask
+
+#### Output
+
+当decoder层全部执行完毕后，怎么把得到的向量映射为我们需要的词呢，很简单，只需要在结尾再添加一个全连接层和softmax层，假如我们的词典是1w个词，那最终softmax会输入1w个词的概率，概率值最大的对应的词就是我们最终的结果。
+
+---
+
