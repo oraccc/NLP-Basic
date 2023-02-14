@@ -88,3 +88,6 @@ Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使�
 简而言之，就是希望每个注意力头，只关注最终输出序列中一个子空间，互相**独立**。其核心思想在于，抽取到更加丰富的**特征信息**。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/multi-headed.png" width="650" />
+
+#### Layer Normalization
+
