@@ -77,9 +77,9 @@ The animal didn't cross the street because it was too tired
 
 #### Multi-Headed Attention
 
-所谓自注意力机制就是通过某种运算来直接计算得到**句子在编码过程中每个位置上的注意力权重**；然后再以权重和的形式来计算得到整个句子的隐含向量表示。
+:star: 所谓自注意力机制就是通过某种运算来直接计算得到**句子在编码过程中每个位置上的注意力权重**；然后再以权重和的形式来计算得到整个句子的隐含向量表示。
 
-自注意力机制的缺陷就是：模型在对当前位置的信息进行编码时，**会过度的将注意力集中于自身的位置**， 因此作者提出了通过多头注意力机制来解决这一问题。
+:star: 自注意力机制的缺陷就是：模型在对当前位置的信息进行编码时，**会过度的将注意力集中于自身的位置**， 因此作者提出了通过多头注意力机制来解决这一问题。
 
 实验证明，**多头注意力机制效果优于单头注意力**。
 
@@ -87,4 +87,4 @@ Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使�
 
 简而言之，就是希望每个注意力头，只关注最终输出序列中一个子空间，互相**独立**。其核心思想在于，抽取到更加丰富的**特征信息**。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/multi-head.png" width="450" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/multi-headed.png" width="650" />
