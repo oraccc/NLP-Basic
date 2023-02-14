@@ -74,3 +74,17 @@ The animal didn't cross the street because it was too tired
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention3.png" width="350" />
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention4.png" width="550" />
+
+#### Multi-Headed Attention
+
+所谓自注意力机制就是通过某种运算来直接计算得到**句子在编码过程中每个位置上的注意力权重**；然后再以权重和的形式来计算得到整个句子的隐含向量表示。
+
+自注意力机制的缺陷就是：模型在对当前位置的信息进行编码时，**会过度的将注意力集中于自身的位置**， 因此作者提出了通过多头注意力机制来解决这一问题。
+
+实验证明，**多头注意力机制效果优于单头注意力**。
+
+Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使用多个卷积核**的思想，原文中使用了 8 个 scaled dot-product attention ，在同一 multi-head attention层中，输入均为 KQV ，**同时**进行注意力的计算，彼此之前**参数不共享**，最终将结果**拼接**起来，这样可以允许模型在**不同的表示子空间里学习到相关的信息**
+
+简而言之，就是希望每个注意力头，只关注最终输出序列中一个子空间，互相**独立**。其核心思想在于，抽取到更加丰富的**特征信息**。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/.png" width="550" />
