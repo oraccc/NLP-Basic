@@ -51,7 +51,7 @@ $$
 
 接下来我们详细看一下self-attention，其思想和attention类似，但是self-attention是**Transformer用来将其他相关单词的“理解”转换成我们正在处理的单词的一种思路**，我们看个例子：
 
-The animal didn't cross the street because it was too tired
+> The animal didn't cross the street because it was too tired
 
 这里的 it 到底代表的是 animal 还是 street 呢，对于我们来说能很简单的判断出来，但是对于机器来说，是很难判断的，self-attention就能够让机器把 it 和 animal 联系起来，接下来我们看下详细的处理过程。
 
@@ -91,7 +91,7 @@ Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使�
 
 #### Layer Normalization
 
-在Transformer中，每一个子层（Self-Attetion，Feed Forward Neural Network）之后都会接一个**Add & Norm**，其中 Add 为**Residule Block 残差模块**，并且 Norm 有一个**Layer Normalization**。
+在Transformer中，每一个子层（`Self-Attetion`，`Feed Forward Neural Network`）之后都会接一个**Add & Norm**，其中 Add 为**Residule Block 残差模块**，并且 Norm 有一个**Layer Normalization**。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/layer-normalization.png" width="450" />
 
@@ -111,10 +111,18 @@ BN的主要思想就是：在每一层的每一批数据上进行归一化。我
 
 ##### Layer Normalization
 
-它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差！公式如下:
+整体做法类似于BN，不同的是LN不是在特征间进行标准化操作（横向操作），而是在整条数据间进行标准化操作（纵向操作）。它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差！公式如下:
 $$
 LN(x_i) = \alpha * \frac{x_i-\mu _L}{\sqrt{\sigma^2_L + \varepsilon}} + \beta
 $$
+
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/LN.jpg" width="750" />
+
+
+
+
+
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/normalization.png" width="650" />
 
 #### Feed Forward Neural Network
@@ -122,3 +130,13 @@ $$
 我们需要一种方式，把 8 个矩阵降为 1 个，首先，我们把 8 个矩阵连在一起，这样会得到一个大的矩阵，再随机初始化一个矩阵和这个组合好的矩阵相乘，最后得到一个最终的矩阵。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/ffnn.png" width="650" />
+
+---
+
+
+
+### §8.3 Dncoder层
+
+Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attetion**
+
+**mask 表示掩码，它对某些值进行掩盖，使其在参数更新时不产生效果**。Transformer 模型里面涉及两种 mask，分别是 `padding mask` 和 `sequence mask`。其中，padding mask 在**所有的** `scaled dot-product attention` 里面都需要用到，而 sequence mask 只有在 decoder 的 self-attention 里面用到。
