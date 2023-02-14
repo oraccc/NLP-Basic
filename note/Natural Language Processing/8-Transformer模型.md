@@ -91,3 +91,28 @@ Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使�
 
 #### Layer Normalization
 
+在Transformer中，每一个子层（Self-Attetion，Feed Forward Neural Network）之后都会接一个**Add & Norm**，其中 Add 为**Residule Block 残差模块**，并且 Norm 有一个**Layer Normalization**。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/layer-normalization.png" width="450" />
+
+Normalization有很多种，但是它们都有一个共同的目的，那就是把输入转化成均值为0方差为1的数据。我们在把数据送入激活函数之前进行normalization（归一化），因为我们不希望输入数据落在激活函数的饱和区。
+
+##### Batch Normalization
+
+BN的主要思想就是：在每一层的每一批数据上进行归一化。我们可能会对输入数据进行归一化，但是经过该网络层的作用后，我们的数据已经不再是归一化的了。随着这种情况的发展，数据的偏差越来越大，我的反向传播需要考虑到这些大的偏差，这就迫使我们只能使用较小的学习率来防止梯度消失或者梯度爆炸。**BN的具体做法就是对每一小批数据，在批这个方向上做归一化**。
+
+
+
+##### Layer Normalization
+
+它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差！公式如下:
+$$
+LN(x_i) = \alpha * \frac{x_i-\mu _L}{\sqrt{\sigma^2_L + \varepsilon}} + \beta
+$$
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/normalization.png" width="650" />
+
+#### Feed Forward Neural Network
+
+我们需要一种方式，把 8 个矩阵降为 1 个，首先，我们把 8 个矩阵连在一起，这样会得到一个大的矩阵，再随机初始化一个矩阵和这个组合好的矩阵相乘，最后得到一个最终的矩阵。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/ffnn.png" width="650" />
