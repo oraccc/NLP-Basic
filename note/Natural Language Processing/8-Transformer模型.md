@@ -6,18 +6,18 @@
 
 **[《Attention Is All You Need》](https://arxiv.org/pdf/1706.03762.pdf)是一篇Google提出的将Attention思想发挥到极致的论文。这篇论文中提出一个全新的模型，叫 Transformer，抛弃了以往深度学习任务里面使用到的 CNN 和 RNN**。目前大热的BERT就是基于Transformer构建的，这个模型广泛应用于NLP领域，例如机器翻译，问答系统，文本摘要和语音识别等等方向。
 
-和Seq2Seq模型一样，Transformer模型中也采用了 Encoer-Decoder 架构。
+和Seq2Seq模型一样，Transformer模型中也采用了 `Encoer-Decoder` 架构。
 
 但其结构相比于Attention更加复杂，论文中Encoder层由6个Encoder堆叠在一起，Decoder层也一样。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/transformer-structure.png" width="650" />
 
-每一个encoder和decoder的内部结构如下图
+每一个 Encoder 和 Decoder 的内部结构如下图
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/encoder-decoder.png" width="450" />
 
-- **Encoder** 包含两层，一个self-attention层和一个前馈神经网络，self-attention能帮助当前节点不仅仅只关注当前的词，从而能获取到上下文的语义。
-- **Decoder** 与Encoder的区别在于，有两个MultiHead Attention：
+- **Encoder** 包含两层，一个`Self-attention`层和一个前馈神经网络，`Self-attention`能帮助当前节点不仅仅只关注当前的词，从而能获取到上下文的语义。
+- **Decoder** 与Encoder的区别在于，有两个`MultiHead Attention`：
   - 底层是 **Masked MultiHead Attention**
   - 中间的MultiHead Attention可以叫做 **Cross Attention**，正是这个组件将 Encoder 和 Decoder 连接起来
 
@@ -28,13 +28,13 @@
 
 ### §8.2 Encoder层
 
-首先，模型需要对输入的数据进行一个**embedding**操作，也可以理解为类似w2v的操作，embedding结束之后，输入到encoder层，self-attention处理完数据后把数据送给前馈神经网络，前馈神经网络的计算可以并行，得到的输出会输入到下一个encoder。
+首先，模型需要对输入的数据进行一个**embedding**操作，也可以理解为类似`w2v`的操作，embedding结束之后，输入到encoder层，`self-attention`处理完数据后把数据送给前馈神经网络，前馈神经网络的计算可以并行，得到的输出会输入到下一个encoder。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/encoders.png" width="600" />
 
 #### Positional Encoding
 
-Transformer模型中缺少一种解释输入序列中单词顺序的方法，它跟序列模型还不一样。为了处理这个问题，Transformer给 Encoder 层和 Decoder 层的输入添加了一个额外的向量Positional Encoding，**维度和embedding的维度一样**，这个向量采用了一种很独特的方法来让模型学习到这个值，这个向量能决定当前词的位置，或者说在一个句子中不同的词之间的距离。
+Transformer模型中缺少一种解释输入序列中单词顺序的方法，它跟序列模型还不一样。为了处理这个问题，Transformer给 Encoder 层和 Decoder 层的输入添加了一个额外的向量`Positional Encoding`，**维度和`Embedding`的维度一样**，这个向量采用了一种很独特的方法来让模型学习到这个值，这个向量能决定当前词的位置，或者说在一个句子中不同的词之间的距离。
 
 这个位置向量的具体计算方法有很多种，论文中的计算方法如下：
 $$
@@ -46,7 +46,7 @@ PE(pos, 2i+1) = cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})
 $$
 其中pos是指当前词在句子中的位置，i是指向量中每个值的index，可以看出，在**偶数位置，使用正弦编码，在奇数位置，使用余弦编码**。
 
-最后把这个Positional Encoding与embedding的值相加，作为输入送到下一层。
+最后把这个`Positional Encoding`与`Embedding`的值相加，作为输入送到下一层。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/PE.png" width="600" />
 
