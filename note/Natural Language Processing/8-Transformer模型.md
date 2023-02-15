@@ -17,7 +17,10 @@
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/encoder-decoder.png" width="450" />
 
 - **Encoder** 包含两层，一个self-attention层和一个前馈神经网络，self-attention能帮助当前节点不仅仅只关注当前的词，从而能获取到上下文的语义。
-- **Decoder** 也包含Encoder提到的两层网络，但是在这两层中间还有一层attention层，帮助当前节点获取到当前需要关注的重点内容。
+- **Decoder** 与Encoder的区别在于，有两个MultiHead Attention：
+  - 底层是 **Masked MultiHead Attention**
+  - 中间的MultiHead Attention可以叫做 **Cross Attention**，正是这个组件将 Encoder 和 Decoder 连接起来
+
 
 ---
 
@@ -137,7 +140,7 @@ $$
 
 ### §8.3 Dncoder层
 
-Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attention**
+Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attention** 与 **Cross Attention**
 
 #### Masked Mutil-Head Attention
 
