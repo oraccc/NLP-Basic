@@ -86,9 +86,11 @@ $$
 
 实验证明，**多头注意力机制效果优于单头注意力**。
 
-Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使用多个卷积核**的思想，原文中使用了 8 个 scaled dot-product attention ，在同一 multi-head attention层中，输入均为 KQV ，**同时**进行注意力的计算，彼此之前**参数不共享**，最终将结果**拼接**起来，这样可以允许模型在**不同的表示子空间里学习到相关的信息**
+:question: 为什么需要进行Multi-Head Attention?
 
-简而言之，就是希望每个注意力头，只关注最终输出序列中一个子空间，互相**独立**。其核心思想在于，抽取到更加丰富的**特征信息**。
+> Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使用多个卷积核**的思想，原文中使用了 8 个 scaled dot-product attention ，在同一 multi-head attention层中，输入均为 KQV ，**同时**进行注意力的计算，彼此之前**参数不共享**，最终将结果**拼接**起来，这样可以允许模型在**不同的表示子空间里学习到相关的信息**
+>
+> 简而言之，就是希望每个注意力头，只关注最终输出序列中一个子空间，互相**独立**。其核心思想在于，抽取到更加丰富的**特征信息**。
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/multi-headed.png" width="650" />
 
@@ -138,7 +140,7 @@ $$
 
 
 
-### §8.3 Dncoder层
+### §8.3 Decoder层
 
 Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一个位置向量Positional Encoding，接下来接的是**Masked Mutil-head Attention** 与 **Cross Attention**
 
@@ -168,7 +170,11 @@ Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一�
 
 #### Cross Attention
 
+Decoder模块中间的部分即Cross Attention， 主要的区别在于其中 Self-Attention 的 K, V矩阵不是使用上一个 Decoder block 的输出计算的，而是**使用 Encoder 的的最终输出来计算的**。
 
+根据 Encoder 的输出计算得到 K, V，根据上一个 Decoder block 的输出 Z 计算 Q，这样做的好处是在 Decoder 的时候，每一位单词都可以利用到 Encoder 所有单词的信息 (这些信息无需 Mask)。
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/cross-attention.png" width="550" />
 
 #### Output
 
@@ -176,3 +182,12 @@ Decoder部分其实和 Encoder 部分大同小异，刚开始也是先添加一�
 
 ---
 
+
+
+### §8.4 与其余模型比较
+
+#### 相比于RNN/LSTM
+
+
+
+#### 相比于Seq2Seq
