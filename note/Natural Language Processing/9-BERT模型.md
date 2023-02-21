@@ -143,11 +143,85 @@ BERT预训练模型分为以下三个步骤：**Embedding、Masked LM、Next Sen
 
 #### Embedding
 
+这里的`Embedding`由三种`Embedding`求和而成：
+
+- `Token Embeddings` 是词向量，第一个单词是CLS标志，可以用于之后的分类任务
+- `Segment Embeddings` 用来区别两种句子，因为预训练不光做LM还要做以两个句子为输入的分类任务
+- `Position Embeddings` 和之前文章中的Transformer不一样，不是三角函数而是学习出来的
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/bert-embeddings.png" width="450" >
+
 
 
 #### Masked LM
 
+MLM可以理解为完形填空，作者会随机mask每一个句子中 **15%** 的词，用其上下文来做预测
+
+> 例如：my dog is hairy → my dog is [MASK]
+
+此处将 `hairy` 进行了mask处理，然后采用非监督学习的方法预测mask位置的词是什么，但是该方法有一个问题，因为是mask15%的词，其数量已经很高了，这样就会导致某些词在`fine-tuning`阶段从未见过，为了解决这个问题，作者做了如下的处理：
+
+- **80%**是采用`[mask]`，my dog is hairy → my dog is [MASK]
+- **10%**是随机取一个词来代替`mask`的词，my dog is hairy -> my dog is apple
+- **10%**保持不变，my dog is hairy -> my dog is hairy
+
+**注意：这里的10%是15%需要mask中的10%**
+
+那么为啥要以一定的概率使用随机词呢？这是因为`Transformer`要**保持对每个输入token分布式的表征**，否则Transformer很可能会记住这个[MASK]就是`"hairy"`。至于使用随机词带来的负面影响，文章中解释说,所有其他的Token(即非`"hairy"`的Token)共享 $15\%*10\% = 1.5\%$ 的概率，其影响是可以忽略不计的。
+
+Transformer全局的可视，又增加了信息的获取，但是不让模型获取全量信息。
+
 
 
 #### Next Sentence Prediction
+
+选择一些句子对A与B，其中50%的数据B是A的下一条句子，剩余50%的数据B是语料库中随机选择的，学习其中的相关性，添加这样的预训练的目的是目前很多NLP的任务比如QA和NLI`(Natural Language Inference)`都需要理解两个句子之间的关系，从而能让预训练的模型更好的适应这样的任务。 
+
+个人理解：
+
+- Bert先是用Mask来提高视野范围的信息获取量，增加duplicate再随机Mask，这样跟RNN类方法依次训练预测没什么区别了除了mask不同位置外；
+- 全局视野极大地降低了学习的难度，然后再用A+B/C来作为样本，这样每条样本都有50%的概率看到一半左右的噪声；
+- 但直接学习Mask A+B/C是没法学习的，因为不知道哪些是噪声，所以又加上next_sentence预测任务，与MLM同时进行训练，这样用**next来辅助模型对噪声/非噪声的辨识**，用MLM来完成语义的大部分的学习。
+
+
+
+### §9.4 BERT的评价
+
+BERT的主要贡献总结：
+
+- 引入了`Masked LM`，使用双向LM做模型预训练。
+- 为预训练引入了新目标`NSP`，它可以学习句子与句子间的关系。
+- 进一步验证了更大的模型效果更好： 12 -> 24 层。
+- 为下游任务引入了很通用的求解框架，不再为任务做模型定制。
+- 刷新了多项NLP任务的记录，引爆了NLP无监督预训练技术。
+
+##### BERT优点
+
+- `Transformer Encoder`因为有`Self-Attention`机制，因此BERT自带双向功能
+- 因为双向功能以及多层`Self-Attention`机制的影响，使得BERT必须使用Cloze版的语言模型`Masked-LM`来完成 `token` 级别的预训练
+- 为了获取比词更高级别的句子级别的语义表征，BERT加入了`Next Sentence Prediction`来和`Masked-LM`一起做联合训练
+- 为了适配多任务下的迁移学习，BERT设计了更通用的输入层和输出层
+- 微调成本小
+
+##### BERT缺点
+
+- task1的随机遮挡策略略显粗犷
+- [MASK]标记在实际预测中不会出现，训练时用过多[MASK]影响模型表现。每个batch只有15%的token被预测，所以BERT收敛得比`left-to-right`模型要慢（它们会预测每个token）
+- BERT对硬件资源的消耗巨大（大模型需要16个tpu，历时四天；更大的模型需要64个tpu，历时四天）
+
+##### 评价
+
+BERT是NLP里里程碑式的工作，对于后面NLP的研究和工业应用会产生长久的影响，这点毫无疑问。
+
+但是从上文介绍也可以看出，从模型或者方法角度看，**BERT借鉴了ELMO，GPT及CBOW**，主要提出了Masked 语言模型及Next Sentence Prediction，但是这里Next Sentence Prediction基本不影响大局，而Masked LM明显借鉴了CBOW的思想。所以说BERT的模型没什么大的创新，更像最近几年NLP重要进展的集大成者。
+
+归纳一下这些进展就是：
+
+- 两阶段模型，第一阶段双向语言模型预训练，这里注意要用双向而不是单向，第二阶段采用具体任务Fine-tuning或者做特征集成
+- 特征抽取要用Transformer作为特征提取器而不是RNN或者CNN
+- 双向语言模型可以采取CBOW的方法去做
+
+Bert最大的亮点在于效果好及普适性强，几乎所有NLP任务都可以套用Bert这种两阶段解决思路，而且效果应该会有明显提升。可以预见的是，未来一段时间在NLP应用领域，Transformer将占据主导地位，而且这种两阶段预训练方法也会主导各种应用。
+
+---
 
