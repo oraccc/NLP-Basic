@@ -54,3 +54,10 @@
 
 
 
+#### :three: ELMO
+
+ELMO是 `“Embedding from Language Models”` 的简称，其实这个名字并没有反应它的本质思想，提出ELMO的论文题目：`“Deep contextualized word representation”` 更能体现其精髓，`deep contextualized这个短语`。
+
+在此之前的 `Word Embedding` 本质上是个**静态的方式**，所谓静态指的是训练好之后每个单词的表达就固定住了，以后使用的时候，不论新句子上下文单词是什么，这个单词的 `Word Embedding` 不会跟着上下文场景的变化而改变，所以对于比如 `Bank` 这个词，它事先学好的 `Word Embedding` 中混合了几种语义 ，在应用中来了个新句子，即使从上下文中（比如句子包含 `money` 等词）明显可以看出它代表的是 `“银行”` 的含义，但是对应的Word Embedding内容也不会变，它还是**混合了多种语义**。
+
+**ELMO的本质思想是**：我事先用语言模型学好一个单词的`Word Embedding`，此时多义词无法区分，不过这没关系。在实际使用`Word Embedding`的时候，单词已经具备了特定的上下文了，这个时候可以根据上下文单词的语义去**调整**单词的`Word Embedding`表示，这样经过调整后的`Word Embedding`更能表达在这个上下文中的具体含义，自然也就解决了多义词的问题了。**所以ELMO本身是个根据当前上下文对`Word Embedding`动态调整的思路。**
