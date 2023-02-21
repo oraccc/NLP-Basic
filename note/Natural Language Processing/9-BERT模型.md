@@ -128,3 +128,26 @@ ELMO在做语言模型预训练的时候，预测单词 $W_i$ 同时使用了上
 
 ### §9.3 BERT模型
 
+Bert采用和GPT完全相同的两阶段模型，首先是语言模型**预训练**；其次是使用**`Fine-Tuning`模型解决下游任务**。和GPT的最主要不同在于在预训练阶段采用了类似ELMO的双向语言模型，即双向的Transformer，当然另外一点是语言模型的数据规模要比GPT大。模型结构如下：
+
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/bert-gpt-elmo.png" width="750" >
+
+对比OpenAI GPT(Generative pre-trained transformer)，BERT是双向的Transformer block连接；就像单向rnn和双向rnn的区别，直觉上来讲效果会好一些。
+
+对比ELMo，虽然都是“双向”，但目标函数其实是不同的。
+
+- ELMo是分别以 $P(w_i|w_1,...,w_{i-1})$ 和 $P(w_i|w_{i+1},...,w_n)$ 作为目标函数，独立训练处两个representation然后拼接
+- 而BERT则是以作为目标函数 $P(w_i|w_1,...,w_{i-1},w_{i+1},..,w_n)$ 训练LM。
+
+BERT预训练模型分为以下三个步骤：**Embedding、Masked LM、Next Sentence Prediction**
+
+#### Embedding
+
+
+
+#### Masked LM
+
+
+
+#### Next Sentence Prediction
+
