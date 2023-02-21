@@ -80,3 +80,42 @@ ELMO是 `“Embedding from Language Models”` 的简称，其实这个名字并
 
 也就是说，ELMO的预训练过程不仅仅学会单词的`Word Embedding`，还学会了**一个双层双向的LSTM网络结构**，而这两者后面都有用。
 
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/elmo-train.png" width="550" >
+
+上面介绍的是ELMO的第一阶段：预训练阶段。那么预训练好网络结构后，**如何给下游任务使用呢**？比如我们的下游任务仍然是`QA`问题:
+
+- 此时对于问句 $X$，我们可以先将句子 $X$ 作为预训练好的ELMO网络的输入，这样句子 $X$ 中每个单词在ELMO网络中都能获得对应的三个`Embedding`；
+- 之后给予这三个`Embedding`中的每一个`Embedding`一个权重 $a$，这个权重可以学习得来，根据各自权重累加求和，将三个`Embedding`整合成一个；
+- 然后将整合后的这个`Embedding`作为 $X$ 句在自己任务的那个网络结构中对应单词的输入，以此作为补充的新特征给下游任务使用。对于下游任务QA中的回答句子 $Y$ 来说也是如此处理。
+
+**因为ELMO给下游提供的是每个单词的特征形式**，所以这一类预训练的方法被**称为 `“Feature-based Pre-Training”`**。
+
+
+
+**:question: ELMO引入上下文动态调整单词的`Embedding`后多义词问题解决了吗？**
+
+> 解决了，而且比我们期待的解决得还要好。
+>
+> 对于GloVe训练出的`Word Embedding`来说，多义词比如play，根据它的Embedding找出的最接近的其它单词大多数集中在体育领域，这很明显是因为训练数据中包含play的句子中体育领域的数量明显占优导致；而使用ELMO，根据上下文动态调整后的Embedding不仅能够找出对应的“演出”的相同语义的句子，而且还可以保证找出的句子中的play对应的词性也是相同的，这是超出期待之处。
+>
+> 之所以会这样，是因为我们上面提到过，第一层LSTM编码了很多句法信息，这在这里起到了重要作用。
+
+:question:**ELMO有什么值得改进的缺点呢**？
+
+> - 首先，一个非常明显的缺点在特征抽取器选择方面，ELMO**使用了LSTM而不是Transformer**，Transformer是谷歌在17年做机器翻译任务的“Attention is all you need”的论文中提出的，引起了相当大的反响，很多研究已经证明了**Transformer提取特征的能力是要远强于LSTM的**。
+> - 另外一点，ELMO采取**双向拼接**这种融合特征的能力可能比Bert一体化的融合特征方式弱，但是，这只是一种从道理推断产生的怀疑，目前并没有具体实验说明这一点。
+
+
+
+#### :four: GPT
+
+GPT是`“Generative Pre-Training”`的简称，从名字看其含义是指的生成式的预训练。GPT也采用两阶段过程，第一个阶段是利用语言模型进行预训练，第二阶段通过`Fine-tuning`的模式解决下游任务。
+
+上图展示了GPT的预训练过程，其实和ELMO是类似的，主要不同在于两点：
+
+- 首先，特征抽取器不是用的RNN，而是用的Transformer，上面提到过它的特征抽取能力要强于RNN，这个选择很明显是很明智的；
+- 其次，GPT的预训练虽然仍然是以语言模型作为目标任务，但是采用的是单向的语言模型，所谓“单向”的含义是指：语言模型训练的任务目标是根据 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 单词的上下文去正确预测单词 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) ， [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 之前的单词序列Context-before称为上文，之后的单词序列Context-after称为下文。
+
+如果对Transformer模型不太了解的，可以参考我写的文章：[Transformer](https://github.com/NLP-LOVE/ML-NLP/tree/master/NLP/16.7 Transformer)
+
+ELMO在做语言模型预训练的时候，预测单词 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 同时使用了上文和下文，而GPT则只采用Context-before这个单词的上文来进行预测，而抛开了下文。这个选择现在看不是个太好的选择，原因很简单，它没有把单词的下文融合进来，这限制了其在更多应用场景的效果，比如阅读理解这种任务，在做任务的时候是可以允许同时看到上文和下文一起做决策的。如果预训练时候不把单词的下文嵌入到Word Embedding中，是很吃亏的，白白丢掉了很多信息。
