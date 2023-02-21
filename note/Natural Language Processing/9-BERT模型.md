@@ -111,11 +111,20 @@ ELMO是 `“Embedding from Language Models”` 的简称，其实这个名字并
 
 GPT是`“Generative Pre-Training”`的简称，从名字看其含义是指的生成式的预训练。GPT也采用两阶段过程，第一个阶段是利用语言模型进行预训练，第二阶段通过`Fine-tuning`的模式解决下游任务。
 
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/gpt.png" width="350" >
+
 上图展示了GPT的预训练过程，其实和ELMO是类似的，主要不同在于两点：
 
-- 首先，特征抽取器不是用的RNN，而是用的Transformer，上面提到过它的特征抽取能力要强于RNN，这个选择很明显是很明智的；
-- 其次，GPT的预训练虽然仍然是以语言模型作为目标任务，但是采用的是单向的语言模型，所谓“单向”的含义是指：语言模型训练的任务目标是根据 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 单词的上下文去正确预测单词 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) ， [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 之前的单词序列Context-before称为上文，之后的单词序列Context-after称为下文。
+- 首先，特征抽取器不是用的RNN，而是用的**Transformer**，上面提到过它的特征抽取能力要强于RNN，这个选择很明显是很明智的；
+- 其次，GPT的预训练虽然仍然是以语言模型作为目标任务，但是采用的是**单向的语言模型**，所谓“单向”的含义是指：语言模型训练的任务目标是根据 $W_i$ 单词的上下文去正确预测单词 $W_i$ ，$W_i$之前的单词序列 `Context-Before` 称为上文，之后的单词序列 `Context-After` 称为下文。
 
-如果对Transformer模型不太了解的，可以参考我写的文章：[Transformer](https://github.com/NLP-LOVE/ML-NLP/tree/master/NLP/16.7 Transformer)
+ELMO在做语言模型预训练的时候，预测单词 $W_i$ 同时使用了上文和下文，而GPT则只采用 `Context-Before` 这个单词的上文来进行预测，而抛开了下文。这个选择现在看不是个太好的选择，原因很简单，它**没有把单词的下文融合进来**，这限制了其在更多应用场景的效果，比如阅读理解这种任务，在做任务的时候是可以允许同时看到上文和下文一起做决策的。
 
-ELMO在做语言模型预训练的时候，预测单词 [![[公式\]](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69)](https://camo.githubusercontent.com/7116e9ab1959cfba7454b17ae10a3114f200301452010d587b3db8eb7e4a7f8e/68747470733a2f2f7777772e7a686968752e636f6d2f6571756174696f6e3f7465783d575f69) 同时使用了上文和下文，而GPT则只采用Context-before这个单词的上文来进行预测，而抛开了下文。这个选择现在看不是个太好的选择，原因很简单，它没有把单词的下文融合进来，这限制了其在更多应用场景的效果，比如阅读理解这种任务，在做任务的时候是可以允许同时看到上文和下文一起做决策的。如果预训练时候不把单词的下文嵌入到Word Embedding中，是很吃亏的，白白丢掉了很多信息。
+如果预训练时候不把单词的下文嵌入到`Word Embedding`中，是很吃亏的，白白丢掉了很多信息。
+
+---
+
+
+
+### §9.3 BERT模型
+
