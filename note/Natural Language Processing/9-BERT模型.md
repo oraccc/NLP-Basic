@@ -206,7 +206,8 @@ Transformer全局的可视，又增加了信息的获取，但是不让模型获
   * 对于序列标注问题，输入部分和单句分类是一样的，只需要输出部分**Transformer最后一层每个单词**对应位置都进行分类即可
 
 * 分类任务：文本分类/情感计算
-  * 对于分类问题，与GPT一样，只需要增加起始和终结符号，输出部分和句子关系判断任务类似改造。
+  * 与GPT一样，只需要增加起始和终结符号，输出部分和句子关系判断任务类似改造。
+  * 对于`sequence-level`的分类任务，BERT直接取第一个`[CLS]token`的`final hidden state` $C \in \mathbb{R}^H$，加一层权重 $W \in \mathbb{R}^{K \times H}$ 后softmax预测`label proba`：$P = softmax(CW^T)$
 
 * 句子关系判断：Entailment/QA/自然语言推理
   * 对于句子关系类任务，和GPT类似，加上一个起始和终结符号，句子之间加个分隔符即可。对于输出来说，把**第一个**起始符号对应的Transformer最后一层位置上面串接一个softmax分类层即可。
