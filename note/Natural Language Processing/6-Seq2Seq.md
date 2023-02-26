@@ -183,7 +183,7 @@ $$
 - 在之后的每个时间步，基于上个时间步的 $k$ 个候选输出序列，从 $k*|Y|$ 个可能的输出序列中选取条件概率最大的 $k$ 个，作为该时间步的候选输出序列。
 - 最终，我们从各个时间步的候选输出序列中筛选出包含特殊符号“\<eos>”的序列，并将它们中所有特殊符号“\<eos>”后面的子序列舍弃，得到**最终候选输出序列的集合**。
 
-<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2Seq/beam search.png" width="650" />
+<img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/seq2seq/beam search.png" width="650" />
 
 束宽为2，输出序列最大长度为3。
 
