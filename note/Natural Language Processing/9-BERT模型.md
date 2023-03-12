@@ -147,7 +147,9 @@ Bert采用和GPT完全相同的两阶段模型，首先是语言模型**预训�
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/bert-gpt-elmo.png" width="750" >
 
-对比OpenAI GPT(Generative pre-trained transformer)，BERT是双向的Transformer block连接；就像单向rnn和双向rnn的区别，直觉上来讲效果会好一些。
+对比OpenAI GPT(Generative pre-trained transformer)，BERT是双向的Transformer block连接；就像单向RNN和双向RNN的区别，直觉上来讲效果会好一些。
+
+> BERT 只使用了 **Transformer 的 Encoder 模块**，原论文中，作者分别用 **12 层和 24 层 Transformer Encoder 组装了两套 BERT 模型**。
 
 对比ELMo，虽然都是“双向”，但目标函数其实是不同的。
 
