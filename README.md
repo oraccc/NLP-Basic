@@ -16,7 +16,7 @@
 | [§7-注意力机制](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/7-%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md) | [Attention](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/7-attention.ipynb) |
 | [§8-Transformer](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/8-Transformer%E6%A8%A1%E5%9E%8B.md) | [(1) Transformer](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/8-transformer.ipynb)<br />[(2) Annotated Transformer](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/8-annotated_transformer.ipynb) |
 | [§9-BERT](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/9-BERT%E6%A8%A1%E5%9E%8B.md) | [BERT](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/9-sentiment_analysis_with_bert.ipynb) |
-| §10-XLNet                                                    | XLNet                                                        |
+| [§10-XLNet](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/10-XLNet%E6%A8%A1%E5%9E%8B.md) | XLNet                                                        |
 
 
 
