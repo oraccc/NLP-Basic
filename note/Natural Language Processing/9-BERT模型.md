@@ -166,6 +166,9 @@ BERT预训练模型分为以下三个步骤：**Embedding、Masked LM、Next Sen
 - `Segment Embeddings` 用来区别两种句子，因为预训练不光做LM还要做以两个句子为输入的分类任务
 - `Position Embeddings` 和之前文章中的Transformer不一样，不是三角函数而是学习出来的
 
+最后，BERT 模型将字向量、文本向量和位置向量的加和作为模型输入。特别地，在目前的 BERT 模型中，文章作者还将英文词汇作进一步切割，划分为更细粒度的语义单位（WordPiece），例如：将 `playing` 分割为 `play` 和`##ing`；此外，对于中文，目前作者未对输入文本进行分词，而是直接将单字作为构成文本的基本单位。
+
+
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/bert/bert-embeddings.png" width="450" >
 
 
