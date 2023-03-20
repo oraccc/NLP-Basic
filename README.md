@@ -26,6 +26,6 @@
 | ------------------------------------------------------------ | :----------------------------------------------------------- |
 | [§1-线性回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/1-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.md) | [Linear Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning%20%26%20Deep%20Learning/1-linear-regression.ipynb) |
 | [§2-逻辑回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/2-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92.md) | [Logistic Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning%20%26%20Deep%20Learning/2-logistic-regression.ipynb) |
-|                                                              |                                                              |
+| [§3-马尔可夫](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/3-%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB.md) |                                                              |
 
 ---
