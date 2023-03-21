@@ -79,8 +79,8 @@ class TextCNN(nn.Module):
         self.num_class = config.num_class
         self.use_element = config.use_element
         self.config = config
- 
-		# Embedding部分
+        
+        # Embedding部分
         self.embedding = nn.Embedding(num_embeddings=config.vocab_size, 
                                 embedding_dim=config.embedding_size)
         # Conv部分
@@ -105,7 +105,7 @@ class TextCNN(nn.Module):
         # feature_size=100, window_sizes=[3,4,5,6]
         embed_x = self.embedding(x)
         
-		# (batch_size, text_len, embedding_size)->(batch_size, embedding_size, text_len)
+        # (batch_size, text_len, embedding_size)->(batch_size, embedding_size, text_len)
         # 32*256*35 一维卷积是在最后维度上扫的
         embed_x = embed_x.permute(0, 2, 1)
         
