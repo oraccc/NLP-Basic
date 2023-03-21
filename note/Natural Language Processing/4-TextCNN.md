@@ -59,11 +59,16 @@ TextCNN的详细过程与原理图如下所示
 第一层是图中最左边的7乘5的句子矩阵，每行是词向量，$dim=5$，这个可以类比为图像中的原始像素点了。以1个样本为例，整体的前向逻辑是：
 
 - [x] 对词进行embedding，得到 $[seqLength, embeddingDim]$
-- [x] 用N个卷积核，得到N个 $seqLength - filterSize + 1$ 长度的一维feature map
+- [x] 用N(out_channels)个卷积核，得到N个 $seqLength - filterSize + 1$ 长度的一维feature map
 - [x] 对feature map进行max-pooling（**因为是时间维度的，也称max-over-time pooling**），得到N个 $1 * 1$ 的数值，这样不同长度句子经过pooling层之后都能变成定长的表示了，然后拼接成一个N维向量，作为文本的句子表示
 - [x] 最后接一层全连接的 softmax 层，将N维向量压缩到类目个数的维度，输出每个类别的概率。
 
 **参考代码**
+
+`class torch.nn.Conv1d(in_channels, out_channels, kernel_size)`
+
+- in_channels(int) – 输入信号的通道。在文本分类中，即为词向量的维度
+- out_channels(int) – 卷积产生的通道。有多少个out_channels，就需要多少个1维卷积
 
 ```python
 class TextCNN(nn.Module):
@@ -78,6 +83,7 @@ class TextCNN(nn.Module):
 		# Embedding部分
         self.embedding = nn.Embedding(num_embeddings=config.vocab_size, 
                                 embedding_dim=config.embedding_size)
+        # Conv部分
         self.convs = nn.ModuleList([
                 nn.Sequential(nn.Conv1d(in_channels=config.embedding_size, 
                                         out_channels=config.feature_size, 
@@ -86,6 +92,7 @@ class TextCNN(nn.Module):
                               nn.MaxPool1d(kernel_size=config.max_text_len-h+1))
                      for h in config.window_sizes
                     ])
+        # FC部分
         self.fc = nn.Linear(in_features=config.feature_size*len(config.window_sizes),
                             out_features=config.num_class)
         if os.path.exists(config.embedding_path) and config.is_training and config.is_pretrain:
@@ -93,19 +100,23 @@ class TextCNN(nn.Module):
             self.embedding.weight.data.copy_(torch.from_numpy(np.load(config.embedding_path)))    
     
     def forward(self, x):
+        # e.g.: 32*35*256
+        # batch_size=32, max_text_len=35, embedding_size=256
+        # feature_size=100, window_sizes=[3,4,5,6]
         embed_x = self.embedding(x)
         
-        #print('embed size 1',embed_x.size())  # 32*35*256
-# batch_size x text_len x embedding_size  -> batch_size x embedding_size x text_len
+		# (batch_size, text_len, embedding_size)->(batch_size, embedding_size, text_len)
+        # 32*256*35 一维卷积是在最后维度上扫的
         embed_x = embed_x.permute(0, 2, 1)
-        #print('embed size 2',embed_x.size())  # 32*256*35
-        out = [conv(embed_x) for conv in self.convs]  #out[i]:batch_size x feature_size*1
-        #for o in out:
-        #    print('o',o.size())  # 32*100*1
-        out = torch.cat(out, dim=1)  # 对应第二个维度（行）拼接起来，比如说5*2*1,5*3*1的拼接变成5*5*1
-        #print(out.size(1)) # 32*400*1
+        
+        # out[i]: 32*100*1 最后一个维度是1，因为经过了max_pool
+        out = [conv(embed_x) for conv in self.convs]  
+
+        # 32*400*1 对应第二个维度拼接起来
+        out = torch.cat(out, dim=1)
+        
+        # 32*400
         out = out.view(-1, out.size(1)) 
-        #print(out.size())  # 32*400 
         if not self.use_element:
             out = F.dropout(input=out, p=self.dropout_rate)
             out = self.fc(out)
