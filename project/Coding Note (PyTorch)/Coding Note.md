@@ -1,5 +1,15 @@
 ### pandas 数据处理
 
+
+
+`Series.values`
+
+> Return Series as ndarray or ndarray-like depending on the dtype.
+>
+> Returns: `numpy.ndarray` or ndarray-like
+
+
+
 `pandas.DataFrame.value_counts`
 
 > Return a **Series** containing counts of unique rows in the DataFrame.
