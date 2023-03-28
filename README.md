@@ -1,6 +1,6 @@
 ## NLP Basic
 
-
+#### Notes and Codes
 
 ##### Part I : NLP
 
@@ -29,3 +29,10 @@
 | [§3-马尔可夫](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/3-%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB.md) |                                                              |
 
 ---
+
+#### Projects
+
+| :microscope:Topic                     | :file_folder:Codes                                           |
+| ------------------------------------- | ------------------------------------------------------------ |
+| Yelp Reviews Sentiment Classification | [(1) TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/project/Yelp_Reviews_Sentiment_Classification(PyTorch)/yelp_sentiment_classification_with_textcnn.ipynb) |
+
