@@ -34,5 +34,5 @@
 
 | :microscope:Topic                     | :file_folder:Codes                                           |
 | ------------------------------------- | ------------------------------------------------------------ |
-| Yelp Reviews Sentiment Classification | [(1) TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/project/Yelp_Reviews_Sentiment_Classification(PyTorch)/yelp_sentiment_classification_with_textcnn.ipynb) |
+| Yelp Reviews Sentiment Classification | [(1) TextCNN](https://github.com/oraccc/NLP-Basic/blob/master/project/Yelp_Reviews_Sentiment_Classification(PyTorch)/yelp_sentiment_classification_with_textcnn.ipynb)<br />[(2) BERT](https://github.com/oraccc/NLP-Basic/blob/master/project/Yelp_Reviews_Sentiment_Classification(PyTorch)/yelp_sentiment_classification_with_bert.ipynb) |
 
