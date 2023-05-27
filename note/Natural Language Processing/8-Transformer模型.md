@@ -37,7 +37,7 @@
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/encoder-decoder.png" width="450" />
 
-- **Encoder** 包含两层，一个`Self-attention`层和一个前馈神经网络，`Self-attention`能帮助当前节点不仅仅只关注当前的词，从而能获取到上下文的语义。
+- **Encoder** 包含两层，一个`Self-Attention`层和一个前馈神经网络，`Self-Attention`能帮助当前节点不仅仅只关注当前的词，从而能获取到上下文的语义。
 - **Decoder** 与Encoder的区别在于，有两个`MultiHead Attention`：
   - 底层是 **Masked MultiHead Attention**
   - 中间的MultiHead Attention可以叫做 **Cross Attention**，正是这个组件将 Encoder 和 Decoder 连接起来
@@ -99,6 +99,20 @@ $$
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/self-attention4.png" width="550" />
 
+
+
+:question: 为什么在进行softmax之前进行**scaled**（为什么除以dk的平方根）？
+
+> 向量的点积结果会很大，将softmax函数push到梯度很小的区域，scaled会缓解这种现象。
+>
+> 为什么使用维度的根号？
+>
+> 方差越大也就说明，点积的数量级越大（以越大的概率取大值）
+>
+> $D(\frac{q \cdot k}{\sqrt{d_k}}) = \frac{d_k}{(\sqrt{d_k})^2}=1$
+>
+> 将方差控制为1，也就有效地控制了前面提到的梯度消失的问题
+
 #### Multi-Headed Attention
 
 :star: 所谓自注意力机制就是通过某种运算来直接计算得到**句子在编码过程中每个位置上的注意力权重**；然后再以权重和的形式来计算得到整个句子的隐含向量表示。
@@ -107,7 +121,7 @@ $$
 
 实验证明，**多头注意力机制效果优于单头注意力**。
 
-:question: 为什么需要进行Multi-Head Attention?
+:question: 为什么需要进行**Multi-Head Attention**?
 
 > Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内**使用多个卷积核**的思想，原文中使用了 8 个 scaled dot-product attention ，在同一 multi-head attention层中，输入均为 KQV ，**同时**进行注意力的计算，彼此之前**参数不共享**，最终将结果**拼接**起来，这样可以允许模型在**不同的表示子空间里学习到相关的信息**
 >
@@ -137,15 +151,13 @@ BN的主要思想就是：在每一层的每一批数据上进行归一化。我
 
 ##### Layer Normalization
 
-整体做法类似于BN，不同的是LN不是在特征间进行标准化操作（横向操作），而是在整条数据间进行标准化操作（纵向操作）。它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差！公式如下:
+整体做法类似于BN，不同的是LN不是在特征间进行标准化操作（横向操作），而是在整条数据间进行标准化操作**（纵向操作）**。它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差！公式如下:
 $$
 LN(x_i) = \alpha * \frac{x_i-\mu _L}{\sqrt{\sigma^2_L + \varepsilon}} + \beta
 $$
 
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/LN.jpg" width="750" />
-
-
 
 两种方式的比较：
 
