@@ -16,7 +16,7 @@
 | [§7-注意力机制](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/7-%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6.md) | [Attention](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/7-attention.ipynb) |
 | [§8-Transformer](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/8-Transformer%E6%A8%A1%E5%9E%8B.md) | [(1) Transformer](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/8-transformer.ipynb)<br />[(2) Annotated Transformer](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/8-annotated_transformer.ipynb) |
 | [§9-BERT](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/9-BERT%E6%A8%A1%E5%9E%8B.md) | [BERT](https://github.com/oraccc/NLP-Basic/blob/master/code/Natural%20Language%20Processing/9-sentiment_analysis_with_bert.ipynb) |
-| [§10-XLNet](https://github.com/oraccc/NLP-Basic/blob/master/note/Natural%20Language%20Processing/10-XLNet%E6%A8%A1%E5%9E%8B.md) | XLNet                                                        |
+
 
 
 
@@ -26,7 +26,7 @@
 | ------------------------------------------------------------ | :----------------------------------------------------------- |
 | [§1-线性回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/1-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.md) | [Linear Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning%20%26%20Deep%20Learning/1-linear-regression.ipynb) |
 | [§2-逻辑回归](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/2-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92.md) | [Logistic Regression](https://github.com/oraccc/NLP-Basic/blob/master/code/Machine%20Learning%20%26%20Deep%20Learning/2-logistic-regression.ipynb) |
-| [§3-马尔可夫](https://github.com/oraccc/NLP-Basic/blob/master/note/Machine%20Learning%20%26%20Deep%20Learning/3-%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB.md) |                                                              |
+
 
 ---
 
