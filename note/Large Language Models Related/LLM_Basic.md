@@ -1,0 +1,59 @@
+## 1. LLM主流结构和训练目标
+
+### 主流结构
+
+目前LLM（Large Language Model）主流结构包括三种范式，分别为**Encoder-Decoder**、**Causal Decoder**、**Prefix Decoder**，如下图所示：
+
+<img src="..\..\img\llm-basic\three-structures.png" alt="图片" style="zoom: 80%;" />
+
+- Encoder-Decoder
+  结构特点：输入双向注意力，输出单向注意力
+  代表模型：T5、Flan-T5、BART
+- Causal Decoder
+  结构特点：从左到右的单向注意力
+  代表模型：**LLaMA1/2系列、LLaMA衍生物**
+- Prefix Decoder
+  结构特点：输入双向注意力，输出单向注意力
+  代表模型：ChatGLM、ChatGLM2、U-PaLM
+
+### 结构对比
+
+三种结构主要区别在于Attention Mask不同，如下图所示
+
+<img src="..\..\img\llm-basic\three-masks.png" alt="图片" style="zoom: 67%;" />
+
+- Encoder-Decoder
+  特点：**在输入上采用双向注意力**，对问题的编码理解更充分;
+  缺点：**在长文本生成任务上效果差，训练效率低**；
+  适用任务：在偏理解的 NLP 任务上效果好。
+- Causal Decoder
+  特点：**自回归语言模型**，预训练和下游应用是完全一致的，**严格遵守只有后面的token才能看到前面的token的规则**；
+  优点：训练效率高，zero-shot 能力更强，具有涌现能力；
+  适用任务：文本生成任务效果好
+- Prefix Decoder
+  特点：**Prefix部分的token互相能看到**，属于Causal Decoder 和 Encoder-Decoder 的折中；
+  缺点：训练效率低。
+
+### 训练目标
+
+#### 语言模型
+
+根据已有词预测下一个词，即Next Token Prediction，是目前大模型所采用的最主流训练方式，训练目标为最大似然函数：
+$$
+L_{LM}(x) = \sum^n_{i=1}logP(x_i|x_{<i})
+$$
+
+
+训练效率：**Prefix Decoder < Causal Decoder**
+
+Causal Decoder 结构会在**所有token上计算损失**，而Prefix Decoder只会在输出上计算损失。
+
+#### 去噪自编码器
+
+随机替换掉一些文本段，训练语言模型去恢复被打乱的文本段，即完形填空，训练目标函数为:
+$$
+L_{DAE}(x)=logP(\hat{x}|x_{/\hat{x}})
+$$
+
+
+去噪自编码器的实现难度更高，采用去噪自编码器作为训练目标的任务有GLM-130B、T5等。
