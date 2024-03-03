@@ -1,70 +1,8 @@
-## 1. LLM主流结构和训练目标
-
-### 主流结构
-
-目前LLM（Large Language Model）主流结构包括三种范式，分别为**Encoder-Decoder**、**Causal Decoder**、**Prefix Decoder**，如下图所示：
-
-<img src="..\..\img\llm-basic\three-structures.png" alt="图片" style="zoom: 80%;" />
-
-- Encoder-Decoder
-  结构特点：输入双向注意力，输出单向注意力
-  代表模型：T5、Flan-T5、BART
-- Causal Decoder
-  结构特点：从左到右的单向注意力
-  代表模型：**LLaMA1/2系列、LLaMA衍生物**
-- Prefix Decoder
-  结构特点：输入双向注意力，输出单向注意力
-  代表模型：ChatGLM、ChatGLM2、U-PaLM
-
-### 结构对比
-
-三种结构主要区别在于Attention Mask不同，如下图所示
-
-<img src="..\..\img\llm-basic\three-masks.png" alt="图片" style="zoom: 67%;" />
-
-- Encoder-Decoder
-  特点：**在输入上采用双向注意力**，对问题的编码理解更充分;
-  缺点：**在长文本生成任务上效果差，训练效率低**；
-  适用任务：在偏理解的 NLP 任务上效果好。
-- Causal Decoder
-  特点：**自回归语言模型**，预训练和下游应用是完全一致的，**严格遵守只有后面的token才能看到前面的token的规则**；
-  优点：训练效率高，zero-shot 能力更强，具有涌现能力；
-  适用任务：文本生成任务效果好
-- Prefix Decoder
-  特点：**Prefix部分的token互相能看到**，属于Causal Decoder 和 Encoder-Decoder 的折中；
-  缺点：训练效率低。
-
-### 训练目标
-
-#### 语言模型
-
-根据已有词预测下一个词，即Next Token Prediction，是目前大模型所采用的最主流训练方式，训练目标为最大似然函数：
-$$
-L_{LM}(x) = \sum^n_{i=1}logP(x_i|x_{<i})
-$$
-
-
-训练效率：**Prefix Decoder < Causal Decoder**
-
-Causal Decoder 结构会在**所有token上计算损失**，而Prefix Decoder只会在输出上计算损失。
-
-#### 去噪自编码器
-
-随机替换掉一些文本段，训练语言模型去恢复被打乱的文本段，即完形填空，训练目标函数为:
-$$
-L_{DAE}(x)=logP(\hat{x}|x_{/\hat{x}})
-$$
-
-
-去噪自编码器的实现难度更高，采用去噪自编码器作为训练目标的任务有GLM-130B、T5等。
-
-
-
-## 2. LLM主流结构和训练目标
+## LLM构建流程
 
 OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包含四个阶段：**预训练、有监督微调、奖励建模、强化学习**。这四个阶段都需要不同规模数据集合以及不同类型的算法，会产出不同类型的模 型，同时所需要的资源也有非常大的差别。
 
-<img src="..\..\img\llm-basic\openai-flow.png" alt="图片" style="zoom:50%;" />
+<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\openai-flow.png" alt="图片" style="zoom:50%;" />
 
 ### 预训练（Pretraining）
 
@@ -90,7 +28,7 @@ OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包
 
 奖励模型（RM 模型）可以通过二分类模型，对输入的两个结果之间的优劣进行判断。RM 模型与基础语言模型和 SFT 模型不同，RM 模型本身并不能单独提供给用户使用。
 
-<img src="..\..\img\llm-basic\reward-modeling.png" alt="img" style="zoom: 25%;" />
+<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\reward-modeling.png" alt="img" style="zoom: 25%;" />
 
 奖励模型的训练通常和 SFT 模型一样，使用数十块 GPU，通过几天时间完成训练。**由于 RM 模型的准确率对于强化学习阶段的效果有着至关重要的影响，因此对于该模型的训练通常需要大规模的训练数据。** Andrej Karpathy 在报告中指出，该部分需要百万量级的对比数据标注，而且其中很多标注需要**花费非常长的时间才能完成**。标注其质量排序需要制定非常详细的规范，标注人员也需要非常认真的对标规范内容进行标注，需要消耗大量的人力，同时如何保持众包标注人员之间的一致性，也是奖励建模阶段需要解决的难点问题之一。
 
@@ -98,12 +36,25 @@ OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包
 
 ### 强化学习（Reinforcement Learning）
 
-利用 RM 输出的奖励，用强化学习方式微调优化 LM
+利用 RM 输出的奖励，用强化学习方式微调优化 LM。长期以来出于工程和算法原因，人们认为用强化学习训练 LM 是不可能的。而目前多个组织找到的可行方案是使用策略梯度强化学习 (Policy Gradient RL) 算法、**近端策略优化 (Proximal Policy Optimization，PPO)** 微调初始 LM 的部分或全部参数。PPO 算法已经存在了相对较长的时间，有大量关于其原理的指南，因而成为 RLHF 中的有利选择。
 
 [Link](https://huggingface.co/blog/zh/rlhf)
+
+> 让我们首先将微调任务表述为 RL 问题。首先，该 **策略** (policy) 是一个接受提示并返回一系列文本 (或文本的概率分布) 的 LM。这个策略的 **行动空间** (action space) 是 LM 的词表对应的所有词元 (一般在 50k 数量级) ，**观察空间** (observation space) 是可能的输入词元序列，也比较大 (词汇量 ^ 输入标记的数量) 。**奖励函数** 是偏好模型和策略转变约束 (Policy shift constraint) 的结合。
+>
+> PPO 算法确定的奖励函数具体计算如下：将提示 $x$ 输入初始 LM 和当前微调的 LM，分别得到了输出文本$y1, y2$，将来自当前策略的文本传递给 RM 得到一个标量的奖励$r_\theta$。将两个模型的生成文本进行比较计算差异的惩罚项，在来自 OpenAI、Anthropic 和 DeepMind 的多篇论文中设计为输出词分布序列之间的 Kullback–Leibler [(KL) divergence](https://en.wikipedia.org/wiki/Kullback–Leibler_divergence) 散度的缩放，即 $r = r_\theta-\lambda r_{KL}$ 。这一项被用于惩罚 RL 策略在每个训练批次中生成大幅偏离初始模型，以确保模型输出合理连贯的文本。如果去掉这一惩罚项可能导致模型在优化中生成乱码文本来愚弄奖励模型提供高奖励值。此外，OpenAI 在 InstructGPT 上实验了在 PPO 添加新的预训练梯度，可以预见到奖励函数的公式会随着 RLHF 研究的进展而继续进化。
+>
+> 最后根据 PPO 算法，我们按当前批次数据的奖励指标进行优化 (来自 PPO 算法 on-policy 的特性) 。PPO 算法是一种信赖域优化 (Trust Region Optimization，TRO) 算法，它使用梯度约束确保更新步骤不会破坏学习过程的稳定性。DeepMind 对 Gopher 使用了类似的奖励设置，但是使用 A2C ([synchronous advantage actor-critic](http://proceedings.mlr.press/v48/mniha16.html?ref=https://githubhelp.com)) 算法来优化梯度
+
+
+
+<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\rlhf.png" alt="img" style="zoom:33%;" />
+
+
 
 该阶段根据数十万用户给出的提示词，利用在前一阶段训练的 RM 模型，给出 SFT 模型对用户提示词补全结果的质量评估，并与语言模型建模目标综合得到更好的效果。**该阶段所使用的提示词数量与有监督微调阶段类似，数量在十万量级，并且不需要人工提前给出该提示词所对应的理想回复。**使用强化学习，在 SFT 模型基础上调整参数，使得最终生成的文本可以获得更高的奖励（Reward）。该阶段所需要的计算量相较预训练阶段也少很多， 通常也仅需要数十块 GPU，经过数天时间的即可完成训练。
 
 强化学习和有监督微调的对比，在模型参数量相同的情况下，强化学习可以得到相较于有监督微调好得多的效果。此外，强化学习也并不是没有问题的，它会使得基础模型的熵降低，从而减少了模型输出的多样性。
 
 在经过强化学习方法训练完成后的 RL 模型，就是最终提供给用户使用具有理解用户指令和上下文的类 ChatGPT 系统。**由于强化学习方法稳定性不高，并且超参数众多，使得模型收敛难度大，再叠加 RM 模型的准确率问题，使得在大规模语言模型如何能够有效应用强化学习非常困难。**
+
