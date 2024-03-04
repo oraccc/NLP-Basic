@@ -71,3 +71,69 @@ class PositionalEncoder(nn.Module):
 
 
 ## 旋转位置编码RoPE
+
+sinusoidal位置编码对相对位置关系的表示还是比较间接的，那有没有办法**更直接的表示相对位置关系**呢？那肯定是有的，而且有许多不同的方法，旋转位置编码（Rotary Position Embedding，RoPE）是一种用绝对位置编码来表征相对位置编码的方法，并被用在了很多大语言模型的设计中，很多成功的LLM，例如LLAMA系列、GLM、百川、通义千问等，都使用了RoPE。
+
+RoPE 借助了复数的思想，出发点是**通过绝对位置编码的方式实现相对位置编码。**
+
+RoPE的设计思路可以这么来理解：我们通常会通过向量$q$和$k$的内积来计算注意力系数，如果能够对 $q$、$k$ 向量注入了位置信息，然后用更新的 $q$、$k$ 向量做内积就会引入位置信息了。
+
+假设 $f(q,m)$ 表示给在位置 $m$ 的向量 $q$ 添加位置信息的操作，如果**叠加了位置信息后的 $q$（位置 $m$ ）和 $k$（位置 $n$ ）向量的内积可以表示为它们之间距离的差m-n的一个函数，那不就能够表示它们的相对位置关系了**。也就是我们希望找到下面这个等式的一组解：
+$$
+<f(q,m), f(k,n)>=g(q,k,m-n)
+$$
+RoPE这一研究就是为上面这个等式找到了一组解答，也就是
+$$
+f(q,m)=qe^{im\theta} \\
+f(k,n)=ke^{in\theta}
+$$
+<img src="..\..\img\llm-basic\rope_math.png" alt="image-20240305000448536" style="zoom:67%;" />
+
+有了这一形式后，具体实现有两种方式：
+
+- 转到复数域，对两个向量进行旋转，再转回实数域
+- 由于上述矩阵 Rn 具有稀疏性，因此可以使用逐位相乘 ⊗ 操作进一步加快计算速度，直接在实数域通过向量和正余弦函数的乘法进行运算
+- <img src="..\..\img\llm-basic\rope_math2.png" alt="Image" style="zoom: 50%;" />
+
+```python
+import torch
+import math
+
+def rotary_position_embedding(q, k):
+    """
+    Rotary Position Embedding (RoPE) for queries and keys.
+    
+    Args:
+        q: tensor for queries of shape (batch_size, num_heads, seq_len, dim)
+        k: tensor for keys of shape (batch_size, num_heads, seq_len, dim)
+        
+    Returns:
+        Rotated queries and keys
+    """
+    batch_size, num_heads, seq_len, dim = q.size()
+    
+    # Begin of sinusoidal_position_embedding content
+    position = torch.arange(seq_len, dtype=torch.float).unsqueeze(-1).to(q.device)
+    div_term = torch.exp(torch.arange(0, dim, 2, dtype=torch.float) * -(math.log(10000.0) / dim)).to(q.device)
+    
+    pos_emb = position * div_term
+    pos_emb = torch.stack([torch.sin(pos_emb), torch.cos(pos_emb)], dim=-1).flatten(-2, -1)
+    pos_emb = pos_emb.unsqueeze(0).unsqueeze(1)
+    pos_emb = pos_emb.expand(batch_size, num_heads, -1, -1)
+    # End of sinusoidal_position_embedding content
+
+    # Extract and duplicate cosine and sine embeddings
+    cos_emb = pos_emb[..., 1::2].repeat_interleave(2, dim=-1)
+    sin_emb = pos_emb[..., ::2].repeat_interleave(2, dim=-1)
+
+    # Create alternate versions of q and k
+    q_alternate = torch.stack([-q[..., 1::2], q[..., ::2]], dim=-1).reshape(q.size())
+    k_alternate = torch.stack([-k[..., 1::2], k[..., ::2]], dim=-1).reshape(k.size())
+
+    # Rotate queries and keys
+    q_rotated = q * cos_emb + q_alternate * sin_emb
+    k_rotated = k * cos_emb + k_alternate * sin_emb
+
+    return q_rotated, k_rotated
+```
+
