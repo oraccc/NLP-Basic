@@ -13,6 +13,7 @@
   > 3. Proving Test Set Contamination in Black Box Language Models
   > 4. Detecting Pretraining Data from Large Language Models
   > 5. Did ChatGPT cheat on your test?
+  > 6. Data Contamination Quiz: A Tool to Detect and Estimate Contamination in Large Language Models
 
 - Practical strategies for **mitigating** data contamination
 
@@ -22,6 +23,7 @@
 - Different **evaluation** strategies
 
   > 1. DyVal: Graph-informed Dynamic Evaluation of Large Language Models
+  > 1. Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
 
 
 
@@ -122,4 +124,22 @@ We highlight the issue of data contamination in ChatGPT evaluations, with a case
 
 [Link](https://hitz-zentroa.github.io/lm-contamination/blog/)
 
-### 
+
+
+## Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
+
+[Link](https://arxiv.org/html/2403.00393v1)
+
+### Summary
+
+the authors propose "Private Benchmarking," a solution where test datasets are kept private, and models are evaluated without exposing the test data to the model. They outline different scenarios depending on the level of trust placed on model owners or dataset owners and present solutions to prevent data contamination using private benchmarking. Additionally, they discuss techniques from confidential computing and cryptography to maintain the privacy of model weights in private benchmarking scenarios. Finally, they offer solutions for auditing benchmark datasets to ensure their quality in private benchmarking settings.
+
+
+
+## Data Contamination Quiz: A Tool to Detect and Estimate Contamination in Large Language Models
+
+[Link](https://arxiv.org/html/2311.06233v5)
+
+### Summary
+
+The abstract introduces the Data Contamination Quiz (DCQ), a straightforward and efficient method for detecting data contamination in large language models (LLMs) and estimating its extent. The approach frames contamination detection as a series of multiple-choice questions, where three perturbed versions of each dataset instance are generated alongside the original. These versions differ only at the word level. The LLM is tasked with identifying the original instance from the provided options, with an additional option accounting for the possibility that none are correct. Since the sole distinguishing factor among the choices is the exact wording relative to the original instance, LLMs tend to gravitate towards the original if exposed to it during pretraining—an inherent trait of LLMs.
