@@ -134,6 +134,80 @@ def rotary_position_embedding(q, k):
     q_rotated = q * cos_emb + q_alternate * sin_emb
     k_rotated = k * cos_emb + k_alternate * sin_emb
 
-    return q_rotated, k_rotated
+    return q_rotated, k_rotate
+```
+
+
+## 相对位置编码AliBi
+
+**位置编码的长度外推能力来源于位置编码中表征相对位置信息的部分**，相对位置信息不同于绝对位置信息，对于训练时的依赖较少。位置编码的研究一直是基于 Transformer 结构的模型重点。2017 年 Transformer 结构提出时，介绍了两种位置编码，一种是 Naive Learned Position Embedding， 也就是 BERT 模型中使用的位置编码；另一种是 Sinusoidal Position Embedding，通过正弦函数为每个位置向量提供一种独特的编码。这两种最初的形式都是绝对位置编码的形式，依赖于训练过程中的上下文窗口大小，在**推理时基本不具有外推能**。随后，2021 年提出的 Rotary Position Embedding**（RoPE）在一定程度上缓解了绝对位置编码外推能力弱的问题，但仍未达到令人满意的结果。**
+
+后续在 T5 架构中，研究人员们又提出了 T5 Bias Position Embedding，直接在 Attention Map 上操作，对于不同距离的查询和键学习一个偏置的标量值，将其加在注意力分数上，并在每一层都进行此操作，从而学习了一个相对位置的编码信息。这种相对位置编码的外推性能较好，可以在 512 的训练窗口上外推 600 左右的长度。
+
+总结来说，为了有效地实现外推，当前主要有以下方法来扩展语言模型的长文本建模能力：
+
+- **增加上下文窗口的微调：**采用直接的方式，即通过使用一个更长的上下文窗口来微调现有的预训练 Transformer，以适应长文本建模需求。
+- **位置编码：**改进的位置编码，如 ALiB、LeX 等能够实现一定程度上的长度外推。这意味着它们可以在短的上下文窗口上进行训练，在长的上下文窗口上进行推理。
+- **插值法：**将超出上下文窗口的位置编码通过插值法压缩到预训练的上下文窗口中。
+
+文献指出，增加上下文窗口微调的方式训练的模型，对于长上下文的**适应速度较慢**。在经过了超过 10000 个批次的训练后，模型上下文窗口只有小幅度的增长，从 2048 增加到 2560。实验结果显示这种朴素的方法在扩展到更长的上下文窗口时效率较低。
+
+受到 T5 Bias 的启发，Press 等人提出了 ALiBi 算法，是一种预定义的相对位置编码。与传统方法不同，ALiBi 不向单词embedding中添加位置embedding，而是根据token之间的距离给 attention score 加上一个预设好的偏置矩阵，比如 和 相对位置差 1 就加上一个 -1 的偏置，两个 token 距离越远这个负数就越大，代表他们的相互贡献越低。由于注意力机制一般会有多个head，这里针对每一个head会乘上一个预设好的斜率项(Slope)。
+
+也就是说，**ALiBi 并不在 Embedding 层添加位置编码，而在 Softmax 的结果后添加一个静态的不可学习的偏置项：**
+$$
+Softmax(q_iK^T+m * [-(i-1), ..., -2, -1,0])
+$$
+其中 $m$ 是对于不同注意力头设置的斜率值
+
+举个具体的例子，原来的注意力矩阵为 $A$ ，叠加了ALiBi后为 $A+B*m$  ，如下图所示。左侧的矩阵展示了每一对query-key的注意力得分，右侧的矩阵展示了每一对query-key之间的距离，斜率 $m$ 是固定的参数，每个注意头对应一个不同的斜率标量。
+
+<img src="..\..\img\llm-basic\alibi.png" alt="Image" style="zoom: 50%;" />
+
+ALiBi 对最近性具有归纳偏差，它对远程查询-键对之间的注意力分数进行惩罚，随着键和查询之间的距离增加，惩罚增加。不同的注意头以不同的速率增加其惩罚，这取决于斜率幅度。实验证明这组斜率参数适用于各种文本领域和模型尺寸，不需要在新的数据和架构上调整斜率值。
+
+**因此ALiBi方法不需要对原始网络进行改动，允许在较短的输入序列上训练模型，同时在推理时能够有效地外推到较长的序列，从而实现了更高的效率和性能。**
+
+```python
+import math
+import torch
+from torch import nn
+
+def get_slopes(n_heads: int):
+    n = 2 ** math.floor(math.log2(n_heads))
+    m_0 = 2.0 ** (-8.0 / n)
+    m = torch.pow(m_0, torch.arange(1, 1 + n))
+
+    if n < n_heads:
+        m_hat_0 = 2.0 ** (-4.0 / n)
+        m_hat = torch.pow(m_hat_0, torch.arange(1, 1 + 2 * (n_heads - n), 2))
+        m = torch.cat([m, m_hat])
+        
+    return m
+
+@torch.no_grad()
+def get_alibi_biases(n_heads: int, mask: torch.Tensor):
+    m = get_slopes(n_heads).to(mask.device)
+    seq_len = mask.size(0)
+    distance = torch.tril(torch.arange(0, -seq_len, -1).view(-1, 1).expand(seq_len, seq_len))
+    print(distance)
+
+    return distance[:, :, None] * m[None, None, :]
+
+seq_len = 10
+n_heads = 8
+
+m = get_slopes(n_heads)
+print(m)
+
+alibi_biases = torch.zeros(seq_len,seq_len)
+for j in range(1,seq_len):
+    for i in range(j, seq_len):
+        alibi_biases[i, i - j] = -j
+print(alibi_biases)
+
+print(alibi_biases[:, :, None].shape, m[None, None, :].shape)
+
+alibi_biases[:, :, None] * m[None, None, :]
 ```
 

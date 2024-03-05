@@ -2,7 +2,7 @@
 
 OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包含四个阶段：**预训练、有监督微调、奖励建模、强化学习**。这四个阶段都需要不同规模数据集合以及不同类型的算法，会产出不同类型的模 型，同时所需要的资源也有非常大的差别。
 
-<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\openai-flow.png" alt="图片" style="zoom:50%;" />
+<img src="..\..\img\llm-basic\openai-flow.png" alt="图片" style="zoom:50%;" />
 
 ### 预训练（Pretraining）
 
@@ -28,7 +28,7 @@ OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包
 
 奖励模型（RM 模型）可以通过二分类模型，对输入的两个结果之间的优劣进行判断。RM 模型与基础语言模型和 SFT 模型不同，RM 模型本身并不能单独提供给用户使用。
 
-<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\reward-modeling.png" alt="img" style="zoom: 25%;" />
+<img src="..\..\img\llm-basic\reward-modeling.png" alt="img" style="zoom: 25%;" />
 
 奖励模型的训练通常和 SFT 模型一样，使用数十块 GPU，通过几天时间完成训练。**由于 RM 模型的准确率对于强化学习阶段的效果有着至关重要的影响，因此对于该模型的训练通常需要大规模的训练数据。** Andrej Karpathy 在报告中指出，该部分需要百万量级的对比数据标注，而且其中很多标注需要**花费非常长的时间才能完成**。标注其质量排序需要制定非常详细的规范，标注人员也需要非常认真的对标规范内容进行标注，需要消耗大量的人力，同时如何保持众包标注人员之间的一致性，也是奖励建模阶段需要解决的难点问题之一。
 
@@ -48,7 +48,7 @@ OpenAI 所使用的大规模语言模型构建流程如下图1所示。主要包
 
 
 
-<img src="C:\Users\v-yangxu1\OneDrive - Microsoft\Desktop\NLP-Basic\img\llm-basic\rlhf.png" alt="img" style="zoom:33%;" />
+<img src="..\..\img\llm-basic\rlhf.png" alt="img" style="zoom:33%;" />
 
 
 
