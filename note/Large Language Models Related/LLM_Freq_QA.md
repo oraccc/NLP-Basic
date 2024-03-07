@@ -107,3 +107,8 @@ BN的主要思想就是：在每一层的每一批数据上进行归一化。我
 LN整体做法类似于BN，不同的是LN不是在特征间进行标准化操作（横向操作），而是在整条数据间进行标准化操作**（纵向操作）**。它也是归一化数据的一种方式，不过**LN 是在每一个样本上计算均值和方差**，而不是BN那种在批方向计算均值和方差
 
 <img src="https://raw.githubusercontent.com/oraccc/NLP-Basic/master/img/transformer/normalization.png" width="650" />
+
+
+
+
+
