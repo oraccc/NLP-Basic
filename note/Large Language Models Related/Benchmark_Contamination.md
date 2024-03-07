@@ -6,6 +6,9 @@
 
 - **Detect** data contamination in (closed) LLMs
 
+  - 使用各类方法去检测训练数据集闭源的大模型的数据集污染问题：如果数据集开源，可以检测重复率；如果数据集闭源，可以通过补全prompt的方式。
+
+
   > 1. Investigating Data Contamination in Modern Benchmarks for Large Language Models
   >
   > 2. Time Travel in LLMs: Tracing Data Contamination in Large Language Models
@@ -17,13 +20,19 @@
 
 - Practical strategies for **mitigating** data contamination
 
+  - 如何使测试数据集保密，不对外公开进行测试，涉及可信通信的领域
+
+
   > 1. Stop Uploading Test Data in Plain Text: Practical Strategies for Mitigating Data Contamination by Evaluation Benchmarks
   > 2. Can we trust the evaluation on ChatGPT?
 
 - Different **evaluation** strategies
 
+  - 如何对已知有污染的模型进行更好地评测，动态检测
+
   > 1. DyVal: Graph-informed Dynamic Evaluation of Large Language Models
   > 1. Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs
+
 
 
 

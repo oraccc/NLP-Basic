@@ -64,6 +64,108 @@ LLM 训练所需的数据来源大体上可以分为**通用数据**和**专业�
 
 对于使用了字节对编码的大语言模型，其输出序列也是词元序列。对于原始输出，根据终结符 \</w> 的位置确定每个单词的范围，合并范围内的词元，将输出重新组合为词序列，作为最终的结果。
 
+```python
+# BPE
+from transformers import AutoTokenizer
+from collections import defaultdict
+
+corpus = [
+    "This is the Hugging Face Course.",
+    "This chapter is about tokenization.",
+    "This section shows several tokenizer algorithms.",
+    "Hopefully, you will be able to understand how they are trained and generate tokens.",
+]
+
+# 使用 GPT-2 tokenizer 将输入分解为单词:
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+
+word_freqs = defaultdict(int)
+
+for text in corpus:
+    words_with_offsets = tokenizer.backend_tokenizer.pre_tokenizer.pre_tokenize_str(text)
+    new_words = [word for word, offset in words_with_offsets]
+    for word in new_words:
+        word_freqs[word] += 1
+
+# 计算基础词典, 这里使用语料库中的所有字符:
+alphabet = []
+
+for word in word_freqs.keys():
+    for letter in word:
+        if letter not in alphabet:
+            alphabet.append(letter)
+alphabet.sort()
+
+# 增加特殊 Token 在字典的开头，GPT-2 中仅有一个特殊 Token``<|endoftext|>''表示文本结束
+vocab = ["<|endoftext|>"] + alphabet.copy()
+
+# 将单词切分为字符
+splits = {word: [c for c in word] for word in word_freqs.keys()}
+
+#compute_pair_freqs 函数用于计算字典中所有词元对的频率
+def compute_pair_freqs(splits):
+    pair_freqs = defaultdict(int)
+    for word, freq in word_freqs.items():
+        split = splits[word]
+        if len(split) == 1:
+            continue
+        for i in range(len(split) - 1):
+            pair = (split[i], split[i + 1])
+            pair_freqs[pair] += freq
+    return pair_freqs
+
+#merge_pair 函数用于合并词元对
+def merge_pair(a, b, splits):
+    for word in word_freqs:
+        split = splits[word]
+        if len(split) == 1:
+            continue
+
+        i = 0
+        while i < len(split) - 1:
+            if split[i] == a and split[i + 1] == b:
+                split = split[:i] + [a + b] + split[i + 2 :]
+            else:
+                i += 1
+        splits[word] = split
+    return splits
+
+# 迭代训练，每次选取得分最高词元对进行合并，直到字典大小达到设置目标为止:
+vocab_size = 50
+
+while len(vocab) < vocab_size:
+    pair_freqs = compute_pair_freqs(splits)
+    best_pair = ""
+    max_freq = None
+    for pair, freq in pair_freqs.items():
+        if max_freq is None or max_freq < freq:
+            best_pair = pair
+            max_freq = freq
+    splits = merge_pair(*best_pair, splits)
+    merges[best_pair] = best_pair[0] + best_pair[1]
+    vocab.append(best_pair[0] + best_pair[1])
+
+# 训练完成后，tokenize 函数用于给定文本进行词元切分
+def tokenize(text):
+    pre_tokenize_result = tokenizer._tokenizer.pre_tokenizer.pre_tokenize_str(text)
+    pre_tokenized_text = [word for word, offset in pre_tokenize_result]
+    splits = [[l for l in word] for word in pre_tokenized_text]
+    for pair, merge in merges.items():
+        for idx, split in enumerate(splits):
+            i = 0
+            while i < len(split) - 1:
+                if split[i] == pair[0] and split[i + 1] == pair[1]:
+                    split = split[:i] + [merge] + split[i + 2 :]
+                else:
+                    i += 1
+            splits[idx] = split
+    return sum(splits, [])
+
+tokenize("This is not a token.")
+```
+
+
+
 ##### WordPiece 分词
 
 WordPiece也是一种常见的词元分析算法，**最初应用于语音搜索系统**。此后，该算法**做为 BERT 的分词器**。
@@ -81,3 +183,76 @@ Unigram 词元分析是另外一种应用于大语言模型的词元分析方法
 在这个过程中，使用**动态规划算法（如维特比算法）**来高效地找到给定语言模型时单词的最佳分解方式。
 
 #### 冗余去除
+
+大语言模型训练语料库中的重复数据，会降低语言模型的多样性，并可能导致训练过程不稳定，从而影响模型性能。因此，需要对预训练语料库中的重复进行处理，去除其中的冗余部分，这对于改善语言模型的训练具有重要的作用。
+
+**文本冗余发现（Text Duplicate Detection）也称为文本重复检测**，是自然语言处理和信息检索中的基础任务之一，其目标是发现不同粒度上的文本重复，包括句子、段落以及文档等不同级别。冗余去除就是在不同的粒度上进行去除重复内容，包括句子、文档和数据集等粒度的重复。
+
+##### 句子级别
+
+包含重复单词或短语的句子很可能造成语言建模中引入重复的模式。这对语言模型来说会产生非常严重的影响，使得模型在预测时容易陷入重复循环（Repetition Loops）
+
+例如，使用 GPT-2 模型，对于给定的上下文：
+
+> In a shocking finding, scientist discovered a herd of unicorns living in a remote, previously unexplored valley, in the Andes Mountains. Even more surprising to the researchers was the fact that the unicorns spoke perfect English.
+
+如果使用**束搜索（Beam Search）**，在设置 b = 32 时，模型就会产生如下输出，进入了重复循环模式：
+
+> The study, published in the Proceedings of the National Academy of Sciences of the United States of America (PNAS), was conducted by researchers from the Universidad Nacional Autónoma de México (UNAM) and the Universidad Nacional Autónoma de México (UNAM/Universidad Nacional Autónoma de México/Universidad Nacional Autónoma de México/Universidad Nacional Autónoma de México/Universidad Nacional Autónoma de ...
+
+由于重复循环对于语言模型生成的文本质量有非常大的影响，因此在预训练语料中需要删除这些包含大量重复单词或者短语的句子。
+
+<img src="..\..\img\llm-basic\refinedweb.png" alt="image-20240307142026306" style="zoom:50%;" />
+
+##### 文档级别
+
+**在文档级别上，大部分大语言模型都是依靠文档之间的表面特征相似度（例如 重叠比例）进行检测并删除重复文档。**
+
+**LLaMA 采用 CCNet 的处理模式**，首先将文档拆分为段落，并把所有字符转换为小写字符、将数字替换为占位符，以及删除所有 Unicode 标点符号和重音符号来对每个段落进行规范化处理。然后，使用 SHA-1 方法为每个段落计算一个哈希码（Hash Code），并使用前 64 位数字作为键。最后，利用每个段落的键进行重复判断。
+
+RefinedWeb 首先去除掉页面中菜单、标题、页脚、广告等内容，仅抽取页面中的主要内容。在此基础上，在文档级别进行过滤，采用与文献类似的方法，使用 $n-gram$ 重叠程度来衡量句子、段落以及文档的相似度。如果重复程度超过预先设定的阈值，则会过滤掉重复段落或文档。
+
+##### 数据集层面
+
+数据集层面也可能存在一定数量的重复情况，比如很多大语言模型预训练集合都会包含 GitHub、Wikipedia、C4 等数据集。还需要特别注意的是，**预训练语料中混入测试语料，从而造成数据集污染的情况。**
+
+
+
+#### 低质过滤
+
+如何**从收集到的数据中删除低质量数据成为大语言模型训练中的重要步骤。**大语言模型训练中所使用的低质量数据过滤方法可以大致分为两类：**基于分类器的方法和基于启发式的方法。**
+
+##### 基于分类器的方法
+
+**基于分类器的方法目标是训练文本质量判断模型，并利用该模型识别并过滤低质量数据。**
+
+GPT3、PALM 以及 GLam 模型在训练数据构造时都使用了基于分类器的方法。
+
+文献采用了**基于特征哈希的线性分类器（Feature Hash Based Linear Classifier）**，可以非常高效地完成文本质量判断。该分类器使用一组精选文本（维基百科、书籍和一些选定的网站）进行训练，目标是将与训练数据类似的网页给定较高分数。利用这个分类器可以评估网页的内容质量。在实际应用中，还可以通过**使用 Pareto 分布对网页进行采样**，根据其得分选择合适的阈值，从而选定合适的数据集合。但是，一些研究也发现，**基于分类器的方法可能会删除包含方言或者口语的高质量文本，从而损失一定的多样性。**
+
+##### 基于启发式的方法
+
+基于启发式的方法则**通过一组精心设计的规则来消除低质量文本，**BLOOM 和 Gopher 采用了基于启发式的方法。
+
+这些启发式规则主要包括：
+
+- **语言过滤：**如果一个大语言模型仅关注一种或者几种语言，那么就可以大幅度的过滤掉数据中其他语言的文本。
+- **指标过滤：**利用评测指标也可以过滤低质量文本。例如，可以使用语言模型对于给定文本的困惑度（Perplexity）进行计算，利用该值可以过滤掉非自然的句子。
+- **统计特征过滤：**针对文本内容可以计算包括标点符号分布、符号字比（Symbol-to-Word Ratio）、句子长度等等在内的统计特征，利用这些特征过滤低质量数据。
+- **关键词过滤：**根据特定的关键词集，可以识别和删除文本中的噪声或无用元素，例如，HTML 标签、超链接以及冒犯性词语等。
+
+在大语言模型出现之前，在自然语言处理领域已经开展了很多**文章质量判断（Text Quality Evaluation）**相关研究，主要应用于**搜索引擎、社会媒体、推荐系统、广告排序以及作文评分**等任务中。
+
+在搜索和推荐系统中，结果的内容质量是影响用户体验的的重要因素之一，因此，此前很多工作都是针对**用户生成内容（User-Generated Content，UGC）**质量进行判断。
+
+自动作文评分也是文章质量判断领域的一个重要子任务，自 1998 年文献提出了**使用贝叶斯分类器进行作文评分预测以来，基于 SVM、CNN-RNN、BERT 等方法的作文评分算法也相继提出，并取得了较大的进展。**
+
+这些方法也都可以应用于大语言模型预训练数据过滤中。**但是由于预训练数据量非常大，并且对于质量判断的准确率并不要求非常高，因此一些基于深度学习以及基于预训练的方法还没有应用于低质过滤过滤中。**
+
+#### 隐私消除
+
+由于绝大多数预训练数据源于互联网，因此不可避免地会包含涉及**敏感或个人信息（Personally Identifiable Information，PII）**的用户生成内容，这可能会增加隐私泄露的风险。如下图所示，输入前缀词“East Stroudsburg Stroudsburg”，语言模型在此基础上补全了姓名、电子邮件地址、电话 号码、传真号码以及实际地址。这些信息都是模型从预训练语料中学习得到的。因此，有非常必要从预训练语料库中删除包含个人身份信息的内容。
+
+<img src="..\..\img\llm-basic\pii.png" alt="Image" style="zoom:50%;" />
+
+删除隐私数据最直接的方法是采用基于规则的算法，BigScience ROOTS Corpus 构建过程中就是采用了基于**命名实体识别**的方法，利用命名实体识别算法检测姓名、地址和电话号码等个人信息内容并进行删除或者替换。该方法使用了基于 Transformer 的模型，并结合机器翻译技术，可以处理超过 100 种语言的文本，消除其中的隐私信息。该算法被集成在 **muliwai** 类库中。
