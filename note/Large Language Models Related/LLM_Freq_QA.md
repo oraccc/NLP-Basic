@@ -177,6 +177,27 @@ def subsequent_mask(size):
   return subsequent_mask == 0
 ```
 
+### Layer Normalization
+
+```python
+class LayerNorm(nn.Module):
+  "Construct a layernorm module."
+
+  def __init__(self, features, eps=1e-6):
+    super(LayerNorm, self).__init__()
+    self.a_2 = nn.Parameter(torch.ones(features))
+    self.b_2 = nn.Parameter(torch.zeros(features))
+    self.eps = eps
+
+  def forward(self, x):
+    # 若要改成batch normalization，维度改为0即可
+    mean = x.mean(-1, keepdim=True)
+    std = x.std(-1, keepdim=True)
+    return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
+```
+
+> BatchNorm作为一种常用的归一化方法，主要对数据的一定维度在batch数据中进行归一。这种方法很难适用于序列数据，对于序列数据而言，在batch维度做归一意义不大，而且一个batch内的序列长度不同。
+
 ### Full Model
 
 ```python
@@ -460,6 +481,21 @@ ZeRO stage 3 提供了模型参数划分，该策略会将模型的参数分配�
 当然，*A*和*B*无法捕获*ΔW*可以捕获的所有信息，但这是设计使然。当使用 LoRA 时，我们假设模型需要*W*是一个满秩的大矩阵，以捕获预训练数据集中的所有知识。然而，当我们微调LLM时，我们不需要更新所有权重并以比*ΔW更少的权重捕获适应的核心信息*；*因此，我们通过AB*进行低等级更新。
 
 
+
+## StarCoder
+
+The StarCoder models are 15.5B parameter models trained on 80+ programming languages from [The Stack (v1.2)](https://huggingface.co/datasets/bigcode/the-stack), with opt-out requests excluded. The model uses [Multi Query Attention](https://arxiv.org/abs/1911.02150), [a context window of 8192 tokens](https://arxiv.org/abs/2205.14135), and was trained using the [Fill-in-the-Middle objective](https://arxiv.org/abs/2207.14255) on 1 trillion tokens.
+
+#### Fill-in-the-middle
+
+Fill-in-the-middle uses special tokens to identify the prefix/middle/suffix part of the input and output:
+
+```python
+input_text = "<fim_prefix>def print_hello_world():\n    <fim_suffix>\n    print('Hello world!')<fim_middle>"
+inputs = tokenizer.encode(input_text, return_tensors="pt").to(device)
+outputs = model.generate(inputs)
+print(tokenizer.decode(outputs[0]))
+```
 
 
 
