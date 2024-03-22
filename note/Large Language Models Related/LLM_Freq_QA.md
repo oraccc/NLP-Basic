@@ -290,7 +290,7 @@ show_example(run_tests)
 
 ## 2. Post-Norm和Pre-Norm
 
-**Bert的Post-Norm**，是在Add操作后进行Norm操作，因此叫做Post-Norm
+**Post-Norm**，是在Add操作后进行Norm操作，因此叫做Post-Norm
 
 而Pre-Norm则是Norm之后再Add，所以叫Pre-Norm
 
@@ -471,8 +471,8 @@ ZeRO stage 3 提供了模型参数划分，该策略会将模型的参数分配�
 大型语言模型很大，并且由于 GPU 内存限制，在训练期间更新所有模型权重的成本可能会很高。例如，假设我们有一个 LLM，其 7B 个参数以权重矩阵*W表示*。（实际上，模型参数当然分布在多层的不同矩阵中，但为了简单起见，我们在这里指的是单个权重矩阵）。在反向传播过程中，我们学习一个*ΔW*矩阵，其中包含**我们想要更新多少原始权重以在训练期间最小化损失函数的信息**。
 那么权重更新如下：
 *W*更新= *W* + *ΔW*
-如果权重矩阵*W*包含7B个参数，则权重更新矩阵*ΔW*也包含7B个参数，**并且计算矩阵*ΔW*可能是计算量和内存密集型的**。
-[Hu](https://link.zhihu.com/?target=https%3A//arxiv.org/abs/2106.09685)*[等人](https://link.zhihu.com/?target=https%3A//arxiv.org/abs/2106.09685)*提出的LoRA方法。替换为**将权重变化*ΔW分解*为较低等级的表示**。准确地说，它不需要显式计算*ΔW* 。*相反，LoRA 在训练期间直接学习ΔW*的分解表示，这就是节省的来源，如下图所示。
+如果权重矩阵*W*包含7B个参数，则权重更新矩阵ΔW也包含7B个参数，**并且计算矩阵*ΔW*可能是计算量和内存密集型的**。
+[Hu](https://link.zhihu.com/?target=https%3A//arxiv.org/abs/2106.09685)*[等人](https://link.zhihu.com/?target=https%3A//arxiv.org/abs/2106.09685)*提出的LoRA方法。替换为**将权重变化ΔW分解为较低等级的表示**。准确地说，它不需要显式计算*ΔW* 。*相反，LoRA 在训练期间直接学习ΔW*的分解表示，这就是节省的来源，如下图所示。
 
 <img src="..\..\img\llm-basic\lora.png" alt="img" style="zoom:80%;" />
 
