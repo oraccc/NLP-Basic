@@ -27,7 +27,7 @@ def attention(query, key, value, mask=None, dropout=None):
 	if dropout is not None:
     	attn = dropout(attn)
     # Output:  [batch_size, (num_heads), seq_len, d_model]
-	return torch.matmul(p_attn, value), attn
+	return torch.matmul(attn, value), attn
 ```
 
 ```python
